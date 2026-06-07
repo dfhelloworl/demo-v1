@@ -1925,3 +1925,509 @@ body {
     padding: 14px;
   }
 }
+
+/* Migrated chat workspace */
+.top-mode-tabs {
+  position: absolute;
+  z-index: 12;
+  left: 36%;
+  right: 27%;
+  top: 7.45%;
+  height: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1.45fr;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.top-mode-tab {
+  position: relative;
+  border: 0;
+  background: transparent;
+  color: rgba(42, 61, 96, 0.66);
+  font: 800 15px/1 inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.top-mode-tab.selected {
+  color: #1f62d8;
+}
+
+.top-mode-tab.selected::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 24px;
+  height: 3px;
+  border-radius: 99px;
+  background: #2e7cff;
+  transform: translateX(-50%);
+}
+
+.chat-home {
+  position: absolute;
+  left: 7.5%;
+  right: 7.5%;
+  top: 20%;
+  bottom: 156px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  overflow-y: auto;
+  padding-bottom: 8px;
+  pointer-events: auto;
+  scrollbar-width: none;
+}
+
+.chat-home::-webkit-scrollbar,
+.task-assistant-panel::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-interaction.chat-active .chat-home,
+.chat-interaction.keyboard-mode .chat-home,
+.chat-interaction.task-panel-open .chat-home,
+.chat-interaction.task-assistant-mode .chat-home {
+  display: none;
+}
+
+.chat-home h1 {
+  margin: 0 0 4px;
+  color: #26385f;
+  font-size: 29px;
+  line-height: 1.1;
+}
+
+.home-panel {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(224, 233, 247, 0.86);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 10px 24px rgba(41, 67, 108, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.home-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.home-panel-head strong {
+  color: #172747;
+  font-size: 17px;
+}
+
+.home-panel-head span {
+  color: #6e7e9a;
+  font-size: 12px;
+}
+
+.market-row,
+.creator-panel button,
+.home-more,
+.home-skill-grid button {
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.market-row {
+  min-height: 32px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  text-align: left;
+}
+
+.market-row b {
+  color: #172747;
+  font-size: 15px;
+}
+
+.market-row em {
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.market-row .up {
+  color: #f0354d;
+}
+
+.market-row .down {
+  color: #10a978;
+}
+
+.market-row span {
+  color: #65748f;
+  font-size: 12px;
+}
+
+.home-more {
+  justify-self: start;
+  padding: 4px 0 0;
+  color: #236cf0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.creator-panel button {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  padding: 0;
+  text-align: left;
+}
+
+.creator-panel b {
+  color: #236cf0;
+}
+
+.creator-panel button span {
+  min-width: 0;
+  overflow: hidden;
+  color: #26385f;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-skill-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.home-skill-grid button {
+  min-height: 34px;
+  border: 1px solid rgba(213, 226, 247, 0.9);
+  border-radius: 17px;
+  background: rgba(246, 250, 255, 0.9);
+  color: #1f3767;
+  font-weight: 700;
+}
+
+.task-assistant-panel {
+  position: absolute;
+  left: 7.5%;
+  right: 7.5%;
+  top: 17.5%;
+  bottom: 154px;
+  display: none;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid rgba(220, 231, 249, 0.9);
+  border-radius: 22px;
+  background: rgba(234, 245, 255, 0.78);
+  box-shadow: 0 14px 34px rgba(35, 59, 97, 0.12);
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+  scrollbar-width: none;
+}
+
+.chat-interaction.task-panel-open .task-assistant-panel {
+  display: block;
+}
+
+.task-panel-head {
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.task-panel-head strong {
+  justify-self: center;
+  color: #172747;
+  font-size: 19px;
+}
+
+.task-panel-back {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
+  color: #30466f;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.task-panel-tabs,
+.task-panel-subtabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.task-panel-tabs button,
+.task-panel-subtabs button,
+.compute-strip button {
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.task-panel-tabs button {
+  color: #53627e;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.task-panel-tabs button.selected {
+  color: #172747;
+}
+
+.task-panel-subtabs {
+  gap: 18px;
+}
+
+.task-panel-subtabs button {
+  color: #61718e;
+  font-weight: 700;
+}
+
+.task-panel-subtabs button.selected {
+  color: #21365f;
+}
+
+.compute-strip {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.compute-strip span,
+.compute-strip button,
+.task-cost {
+  font-weight: 800;
+}
+
+.compute-strip b {
+  margin-left: 4px;
+  color: #f03b5d;
+  font-size: 18px;
+}
+
+.compute-strip button {
+  color: #ec6b35;
+}
+
+.task-cost {
+  margin: 4px 0 10px;
+  color: #2a86ff;
+}
+
+.task-panel-list {
+  display: grid;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.44);
+  overflow: hidden;
+}
+
+.task-panel-item {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  padding: 13px 36px 13px 14px;
+  border: 0;
+  border-bottom: 1px solid rgba(214, 226, 244, 0.68);
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.task-panel-item::after {
+  content: "›";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  color: #4c90ff;
+  font-size: 28px;
+  transform: translateY(-50%);
+}
+
+.task-panel-item strong {
+  color: #172747;
+  font-size: 17px;
+}
+
+.task-panel-item span {
+  color: #63728e;
+}
+
+.task-panel-item em {
+  color: #4777b0;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.chat-tabs {
+  left: 7.5%;
+  right: 7.5%;
+  bottom: 104px;
+  height: 40px;
+  gap: 8px;
+  overflow: visible;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  transform: translateY(var(--chat-tabs-scroll-y, 0));
+}
+
+.chat-chip {
+  height: 100%;
+  padding: 0 16px;
+  margin: 0;
+  border: 1px solid rgba(218, 229, 246, 0.86);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  color: rgba(50, 70, 108, 0.74);
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(41, 68, 109, 0.08);
+}
+
+.chat-chip.selected {
+  border-color: rgba(47, 124, 255, 0.9);
+  background: #fff;
+  color: #1f62d8;
+}
+
+.chat-interaction.task-assistant-mode .chat-menu-hit,
+.chat-interaction.task-assistant-mode .chat-home,
+.chat-interaction.task-assistant-mode .chat-stream,
+.chat-interaction.task-assistant-mode .chat-tabs,
+.chat-interaction.task-assistant-mode .plus-panel,
+.chat-interaction.task-assistant-mode .scenario-sheet,
+.chat-interaction.task-assistant-mode .task-edit-sheet,
+.chat-interaction.task-assistant-mode .fake-keyboard {
+  display: none;
+}
+
+.trader-card {
+  align-self: stretch;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(225, 229, 255, 0.9);
+  border-radius: 24px;
+  background: rgba(244, 245, 255, 0.94);
+  box-shadow: 0 12px 28px rgba(50, 62, 115, 0.1);
+}
+
+.trader-head,
+.trader-mode,
+.trader-tools,
+.trader-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.trader-avatar {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #fff;
+  color: #6271f2;
+  font-weight: 900;
+}
+
+.trader-head strong {
+  color: #202536;
+  font-size: 23px;
+}
+
+.trader-mode b {
+  padding: 7px 12px;
+  border-radius: 13px;
+  background: #f3d6e9;
+  color: #d83b7a;
+}
+
+.trader-mode span {
+  min-width: 0;
+  overflow: hidden;
+  color: #8a92a4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trader-intro,
+.trader-question {
+  margin: 0;
+  color: #202536;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.trader-order {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(250, 251, 255, 0.62);
+}
+
+.trader-order label {
+  padding-left: 10px;
+  border-left: 4px solid #6d7dff;
+  color: #8a92a4;
+  font-weight: 800;
+}
+
+.trader-order-text {
+  padding: 14px;
+  border: 1px solid rgba(210, 215, 255, 0.95);
+  border-radius: 16px;
+  background: #fff;
+  color: #252a3a;
+  font-weight: 700;
+}
+
+.trader-tools,
+.trader-actions {
+  flex-wrap: wrap;
+}
+
+.trader-tools button,
+.trader-actions button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 18px;
+  padding: 0 14px;
+  background: #e8e9ff;
+  color: #6271f2;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.trader-actions button {
+  flex: 1 1 120px;
+  min-height: 46px;
+  background: #fff;
+}
+
+.trader-actions .primary {
+  background: linear-gradient(180deg, #7482ff 0%, #5869f3 100%);
+  color: #fff;
+}

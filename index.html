@@ -102,36 +102,56 @@
           <div class="chat-interaction" id="chatInteraction" aria-hidden="true">
             <div class="home-card-mask" id="homeCardMask" aria-hidden="true"></div>
             <button class="chat-menu-hit" id="chatMenuBtn" type="button" aria-label="打开侧边栏"></button>
+            <section class="top-mode-tabs" id="topModeTabs" aria-label="页面切换">
+              <!-- <button class="top-mode-tab selected" type="button" data-mode="chat">对话</button>
+              <button class="top-mode-tab" type="button" data-mode="task">任务助手</button> -->
+            </section>
+
+            <section class="chat-home" id="chatHome" aria-label="今日开始">
+              <h1>今天从哪里开始？</h1>
+              <article class="home-panel hot-targets">
+                <div class="home-panel-head"><strong>今日热议标的</strong><span>实时行情</span></div>
+                <button class="market-row" type="button" data-prompt="帮我分析宁德时代今天大涨的原因，以及新能源板块是否还能延续"><b>1. 宁德时代</b><em class="up">+6.2%</em><span>#新能源</span></button>
+                <button class="market-row" type="button" data-prompt="帮我分析英伟达上涨对A股AI芯片和算力链的影响"><b>2. 英伟达</b><em class="up">+4.1%</em><span>#AI芯片</span></button>
+                <button class="market-row" type="button" data-prompt="东方财富今天下跌，帮我判断券商板块是不是短线走弱"><b>3. 东方财富</b><em class="down">-1.8%</em><span>#券商</span></button>
+                <button class="home-more" type="button" data-prompt="查看更多今日热议标的，并按上涨原因、资金流和板块主线分类">查看更多 →</button>
+              </article>
+              <article class="home-panel creator-panel">
+                <div class="home-panel-head"><strong>财经达人都在关注</strong><span>观点摘要</span></div>
+                <button type="button" data-prompt="帮我总结财经达人今天都在关注什么，并提炼对A股的三条影响"><b>@趋势老张</b><span>今天重点关注AI算力回流和新能源反弹持续性。</span></button>
+                <button type="button" data-prompt="帮我分析今天A股三大看点，并给出适合关注的板块"><b>@盘面观察员</b><span>A股三大看点：资金回流、券商分歧、事件催化。</span></button>
+              </article>
+              <article class="home-panel skill-panel">
+                <div class="home-panel-head"><strong>大家都爱用的技能</strong><span>高频入口</span></div>
+                <div class="home-skill-grid">
+                  <button type="button" data-prompt="帮我做一份个股深度分析，包含基本面、技术面、资金面和风险点">个股深度分析</button>
+                  <button type="button" data-prompt="帮我根据当前市场主线生成一组可跟踪的选股策略">选股策略</button>
+                  <button type="button" data-prompt="帮我诊断当前持仓结构，指出主要风险和优化方向">持仓诊断</button>
+                  <button type="button" data-prompt="帮我做一个行业对比分析，找出估值和成长性更优的公司">行业对比</button>
+                </div>
+              </article>
+            </section>
+
+            <section class="task-assistant-panel" id="taskAssistantPanel" aria-hidden="true">
+              <div class="task-panel-head"><button class="task-panel-back" id="taskPanelBack" type="button" aria-label="返回">‹</button><strong>任务助手</strong></div>
+              <div class="task-panel-tabs"><button type="button">盯盘任务</button><button type="button">定时任务</button><button class="selected" type="button">复合任务</button></div>
+              <div class="task-panel-subtabs"><button class="selected" type="button">创建任务</button><button type="button">今日完成 5</button><button type="button">进行中</button><button type="button">已结束</button></div>
+              <div class="compute-strip"><span>剩余算力:<b>2005</b></span><button type="button">300算力待领取 ›</button></div>
+              <div class="task-cost">每个任务消耗100算力</div>
+              <div class="task-panel-list">
+                <button class="task-panel-item" type="button" data-prompt="帮我创建一个T选股盯盘任务，发现打新机会时提醒我"><strong>做T选股盯盘</strong><span>发现打新机会，2只新股可预约</span><em>查持仓 · 做T选股 · 盯盘</em></button>
+                <button class="task-panel-item" type="button" data-prompt="帮我创建打板助手任务，持仓涨跌达条件时自动提醒"><strong>打板助手</strong><span>持仓涨跌达条件自动提醒</span><em>查持仓 · 盯盘 · 交易</em></button>
+                <button class="task-panel-item" type="button" data-prompt="帮我创建打新任务，跟踪新股申购和中签提醒"><strong>打新任务</strong><span>新股申购、中签缴款和风险提醒</span><em>打新 · 日历 · 提醒</em></button>
+                <button class="task-panel-item" type="button" data-prompt="帮我持续跟踪财经达人观点，并在观点变化时总结影响"><strong>跟踪财经达人</strong><span>持续跟踪观点变化并生成摘要</span><em>达人动态 · 摘要 · 盯盘</em></button>
+              </div>
+            </section>
 
             <section class="chat-stream" id="chatStream" aria-label="对话流"></section>
 
             <section class="chat-tabs" aria-label="技能栏">
-              <div class="chat-tabs-inner" style="display:flex; height:100%; align-items:center;">
-                <button class="chat-chip selected" type="button" data-tab="分析" aria-label="分析">
-                  <svg viewBox="0 0 16 16" width="12" height="12"><rect x="3" y="2" width="10" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="6" y1="6" x2="6" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                  <span>分析</span>
-                </button>
-                <button class="chat-chip" type="button" data-tab="选股" aria-label="选股">
-                  <svg viewBox="0 0 16 16" width="12" height="12"><path d="M8 2L14 8L8 14L2 8L8 2Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-                  <span>选股</span>
-                </button>
-                <button class="chat-chip" type="button" data-tab="盯盘" aria-label="盯盘">
-                  <svg viewBox="0 0 16 16" width="12" height="12"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-                  <span>盯盘</span>
-                </button>
-                <button class="chat-chip" type="button" data-tab="交易" aria-label="交易">
-                  <svg viewBox="0 0 16 16" width="12" height="12"><path d="M4 12L12 4M12 4H6M12 4V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>交易</span>
-                </button>
-                <button class="chat-chip" type="button" data-tab="定时" aria-label="定时">
-                  <svg viewBox="0 0 16 16" width="12" height="12"><rect x="3" y="2" width="10" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="6" y1="6" x2="6" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                  <span>定时</span>
-                </button>
-                <button class="chat-chip" type="button" data-tab="复杂任务" aria-label="复杂任务">
-                  <svg viewBox="0 0 16 16" width="12" height="12"><rect x="3" y="2" width="10" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="6" y1="6" x2="6" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                  <span>复杂任务</span>
-                </button>
-              </div>
+              <button class="chat-chip selected" type="button" data-tab="技能" aria-label="技能">技能</button>
+              <button class="chat-chip" type="button" data-tab="任务助手" aria-label="任务助手">任务助手</button>
+              <button class="chat-chip" type="button" data-tab="AI交易员" aria-label="AI交易员">AI交易员</button>
             </section>
 
             <section class="chat-input-bar" id="chatInputBar" aria-label="输入栏">

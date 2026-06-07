@@ -1,7 +1,9 @@
 const screens = {
   watchlist: {
     src: "./assets/screens/watchlist.png",
-    scrollHotspots: [],
+    scrollHotspots: [
+      { label: "查看我的账户", x: 50, y: 3.8, w: 45, h: 5.8, target: "account" }
+    ],
     fixedHotspots: []
   },
   marketGenerated: {
@@ -15,7 +17,9 @@ const screens = {
   },
   market: {
     src: "./assets/screens/market-long.png",
-    scrollHotspots: [],
+    scrollHotspots: [
+      { label: "查看我的账户", x: 50, y: 3.8, w: 45, h: 5.8, target: "account" }
+    ],
     fixedHotspots: [],
     guide: { id: "market-watch-nav", layer: "fixed", x: 20, y: 0, w: 20, h: 100 }
   },
@@ -27,20 +31,87 @@ const screens = {
     fixedHotspots: [],
     guide: { id: "customize-save", layer: "scroll", x: 5, y: 89.5, w: 90, h: 5 }
   },
+  configPage: {
+    src: "./assets/screens/config-page.png",
+    scrollHotspots: [
+      { label: "添加卡片", x: 3.5, y: 5.5, w: 23, h: 5, target: "customize" },
+      { label: "关闭定制页面", x: 78, y: 5.5, w: 18, h: 5, target: "market", dismissGuide: "market-generated-customize" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
   report: {
     src: "./assets/screens/morning-list.png",
-    scrollHotspots: [],
+    scrollHotspots: [
+      { label: "查看我的账户", x: 50, y: 3.8, w: 45, h: 5.8, target: "account" },
+      { label: "查看特别提醒", x: 6.8, y: 25.7, w: 86.4, h: 13.4, target: "specialNotice" },
+      { label: "呼叫AI交易员制定计划", x: 46, y: 34.7, w: 45, h: 4.2, target: "aiTrader" }
+    ],
     fixedHotspots: [],
     guide: { id: "report-trans-nav", layer: "fixed", x: 60, y: 0, w: 20, h: 100 }
   },
+  account: {
+    src: "./assets/screens/account.png",
+    scrollHotspots: [
+      { label: "关闭我的账户", x: 2.5, y: 5.2, w: 10, h: 6, target: "accountReturn" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
+  specialNotice: {
+    src: "./assets/screens/special-notice.png",
+    scrollHotspots: [
+      { label: "关闭特别提醒", x: 3.8, y: 6.4, w: 10, h: 6, target: "report" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
+  aiTrader: {
+    src: "./assets/screens/ai-trader.png",
+    scrollHotspots: [
+      { label: "关闭AI交易员", x: 2.5, y: 4.5, w: 10, h: 6, target: "report" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
   chat: {
-    src: "./assets/screens/chat-entry-no-tabs.png",
+    src: "./assets/screens/chat-entry.png",
     scrollHotspots: [
       { label: "返回报告工作区", x: 3.5, y: 6.6, w: 9, h: 7, target: "report" },
       { label: "侧边栏", x: 12, y: 6.8, w: 7.5, h: 3, target: "sidebar" }
     ],
     fixedHotspots: [],
     guide: { id: "chat-sidebar", layer: "scroll", x: 12, y: 6.8, w: 7.5, h: 3 }
+  },
+  chatTaskAssistant: {
+    src: "./assets/screens/task-list-1.png",
+    scrollHotspots: [
+      { label: "返回对话", x: 2, y: 5.2, w: 8, h: 6, target: "chat" },
+      { label: "定时任务", x: 27, y: 12, w: 18, h: 5, target: "chatTaskTimed" },
+      { label: "复合任务", x: 47, y: 12, w: 18, h: 5, target: "chatTaskComposite" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
+  chatTaskTimed: {
+    src: "./assets/screens/task-list-2.png",
+    scrollHotspots: [
+      { label: "返回对话", x: 2, y: 5.2, w: 8, h: 6, target: "chat" },
+      { label: "盯盘任务", x: 6, y: 12, w: 18, h: 5, target: "chatTaskAssistant" },
+      { label: "复合任务", x: 47, y: 12, w: 18, h: 5, target: "chatTaskComposite" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
+  chatTaskComposite: {
+    src: "./assets/screens/task-list-3.png",
+    scrollHotspots: [
+      { label: "返回对话", x: 2, y: 5.2, w: 8, h: 6, target: "chat" },
+      { label: "盯盘任务", x: 6, y: 12, w: 18, h: 5, target: "chatTaskAssistant" },
+      { label: "定时任务", x: 27, y: 12, w: 18, h: 5, target: "chatTaskTimed" }
+    ],
+    fixedHotspots: [],
+    guide: null
   },
   sidebar: {
     src: "./assets/screens/sidebar-tasks.png",
@@ -168,6 +239,10 @@ const moreMenu = document.querySelector("#moreMenu");
 const moreModal = document.querySelector("#moreModal");
 const screenStage = document.querySelector("#screenStage");
 const chatInteraction = document.querySelector("#chatInteraction");
+const topModeTabs = document.querySelector("#topModeTabs");
+const chatHome = document.querySelector("#chatHome");
+const taskAssistantPanel = document.querySelector("#taskAssistantPanel");
+const taskPanelBack = document.querySelector("#taskPanelBack");
 const chatStream = document.querySelector("#chatStream");
 const chatTabs = document.querySelector(".chat-tabs");
 const chatMenuBtn = document.querySelector("#chatMenuBtn");
@@ -196,6 +271,7 @@ const editRun = document.querySelector("#editRun");
 const fakeKeyboard = document.querySelector("#fakeKeyboard");
 let activeKey = "kyc";
 let activeNav = "market";
+let accountReturnKey = "report";
 let moreMenuActive = false;
 let modalGuideActive = false;
 let sidebarEnteredFromChat = false;
@@ -219,7 +295,15 @@ function makeHotspot(spot, className) {
   node.style.height = `${spot.h}%`;
   node.addEventListener("click", (event) => {
     event.preventDefault();
-    const target = event.currentTarget.dataset.target;
+    if (spot.dismissGuide) {
+      dismissedGuideIds.add(spot.dismissGuide);
+    }
+    let target = event.currentTarget.dataset.target;
+    if (target === "account") {
+      accountReturnKey = activeKey;
+    } else if (target === "accountReturn") {
+      target = accountReturnKey;
+    }
     const nextGuideSelector = activeKey === "sidebar" && target === "chat"
       ? '.chat-chip[data-tab="复杂任务"]'
       : null;
@@ -244,7 +328,8 @@ function renderHotspots(screen) {
 }
 
 function syncBottomBarVisibility() {
-  bottomBar.hidden = ["kyc", "customize", "sidebar", "chat"].includes(activeKey);
+  bottomBar.hidden = ["kyc", "customize", "configPage", "sidebar", "chat", "account", "specialNotice", "aiTrader"].includes(activeKey)
+    || activeKey.startsWith("chatTask");
 }
 
 function syncHotspotLayerHeight() {
@@ -438,10 +523,16 @@ async function showScreen(key, nextGuideSelector = null) {
   followupGuideSelector = nextGuideSelector;
   guideDismissed = false;
   const isChat = key === "chat";
+  const isChatTask = key.startsWith("chatTask");
+  const isChatHub = isChat || isChatTask;
   if (chatInteraction) {
-    chatInteraction.classList.toggle("show", isChat);
-    chatInteraction.setAttribute("aria-hidden", isChat ? "false" : "true");
-    if (!isChat) closeChatOverlays();
+    chatInteraction.classList.toggle("show", isChatHub);
+    chatInteraction.classList.toggle("task-assistant-mode", isChatTask);
+    chatInteraction.setAttribute("aria-hidden", isChatHub ? "false" : "true");
+    topModeTabs.querySelectorAll(".top-mode-tab").forEach((tab) => {
+      tab.classList.toggle("selected", tab.dataset.mode === (isChatTask ? "task" : "chat"));
+    });
+    if (!isChatHub) closeChatOverlays();
   }
   kycScreen.hidden = true;
   moreMenu.hidden = true;
@@ -490,9 +581,9 @@ function updateNavState(screenKey = activeKey, forceMore = false) {
       ? "trans"
       : screenKey === "watchlist"
         ? "watchlist"
-      : screenKey === "report"
+      : screenKey === "report" || screenKey === "account" || screenKey === "specialNotice" || screenKey === "aiTrader"
         ? "watch"
-        : screenKey === "chat" || screenKey === "sidebar"
+        : screenKey === "chat" || screenKey.startsWith("chatTask") || screenKey === "sidebar"
           ? "chat"
           : "market";
 
@@ -531,7 +622,7 @@ kycScreen.querySelectorAll(".kyc-card").forEach((card) => {
 });
 
 confirmCard.querySelector(".btn-customize").addEventListener("click", () => {
-  showScreen("customize");
+  showScreen("configPage");
 });
 
 confirmCard.querySelector(".btn-recommend").addEventListener("click", () => {
@@ -658,7 +749,7 @@ function escapeHtml(value) {
 }
 
 function closeChatOverlays() {
-  chatInteraction.classList.remove("keyboard-open", "keyboard-mode", "chat-active");
+  chatInteraction.classList.remove("keyboard-open", "keyboard-mode", "chat-active", "task-panel-open");
   keyboardToggle.classList.remove("active");
   plusPanel.classList.remove("show");
   plusPanel.setAttribute("aria-hidden", "true");
@@ -739,6 +830,34 @@ function appendTaskConfirmCard(promptText) {
   chatStream.scrollTop = chatStream.scrollHeight;
 }
 
+function appendTraderCard() {
+  enterChatMode();
+  chatInteraction.classList.remove("task-panel-open");
+  scenarioSheet.classList.remove("show");
+  scenarioSheet.setAttribute("aria-hidden", "true");
+  plusPanel.classList.remove("show");
+
+  const card = document.createElement("article");
+  card.className = "trader-card";
+  card.innerHTML = `
+    <div class="trader-head"><div class="trader-avatar">AI</div><strong>AI交易员</strong></div>
+    <div class="trader-mode"><b>深度思考</b><span>已读取最新指令和交易执行情况⌄</span></div>
+    <p class="trader-intro">我收到了来自账户管家的派单，说你希望对持仓的部分股票进行卖出操作。</p>
+    <p class="trader-question">需要我帮你围绕以下要求制定交易计划吗？</p>
+    <div class="trader-order">
+      <label>来自管家的派单</label>
+      <div class="trader-order-text">再跌就卖出复旦微电和中芯国际一定仓位</div>
+      <div class="trader-tools"><button type="button">+ 选股结果</button><button type="button">+ 语音下达</button></div>
+    </div>
+    <div class="trader-actions">
+      <button class="primary" type="button" data-trader-action="plan">帮我制定交易计划</button>
+      <button type="button" data-trader-action="edit">调整派单要求</button>
+    </div>
+  `;
+  chatStream.appendChild(card);
+  chatStream.scrollTop = chatStream.scrollHeight;
+}
+
 function appendMockReport() {
   appendBubble("assistant", [
     "【交易日志】收盘报告（示例）",
@@ -788,6 +907,24 @@ function closePlusPanel() {
 }
 
 const scenarioConfigs = {
+  "技能": {
+    desc: "精选一些更有产品特色、用户不一定会主动想到的分析能力。",
+    items: [
+      ["可比公司分析", "横向对比同类公司，快速看清估值、成长和竞争位置。", "帮我做[股票名称]的可比公司分析，对比估值、成长性和竞争优势"],
+      ["市场主线识别", "识别近期市场真正的主线、扩散方向和核心标的。", "帮我识别当前市场主线，说明主线逻辑、强势板块和核心标的"],
+      ["基金诊断分析", "诊断基金风格、持仓暴露、业绩来源和潜在风险。", "帮我诊断[基金名称/基金代码]，分析持仓风格、收益来源和主要风险"],
+      ["事件催化日历", "整理未来可能影响行情的关键事件和观察窗口。", "帮我整理未来一段时间的事件催化日历，标出可能影响A股的关键节点"]
+    ]
+  },
+  "AI交易员": {
+    desc: "把分析结果进一步转成交易计划、风控动作和执行纪律。",
+    items: [
+      ["交易计划生成", "根据标的、仓位和风险偏好生成可执行交易计划。", "帮我为[股票名称]生成一份交易计划，包括买入区间、止损位、止盈位和仓位建议"],
+      ["持仓调仓建议", "结合当前持仓和市场状态给出调仓动作。", "帮我检查当前持仓，给出需要减仓、加仓或继续观察的建议"],
+      ["盘中执行提醒", "把交易计划拆成盘中可执行的提醒条件。", "帮我把[股票名称]的交易计划拆成盘中执行提醒"],
+      ["风险纪律检查", "在交易前检查是否违反仓位、止损和追高纪律。", "帮我检查这笔交易是否违反我的风险纪律"]
+    ]
+  },
   "分析": {
     desc: "已有明确标的或持仓时，立即输出研究、诊断和判断，不进入任务卡片。",
     items: [
@@ -877,11 +1014,18 @@ function fillPromptToInput(prompt) {
   setKeyboardMode(true);
   chatInput.value = prompt;
   enterChatMode();
+  chatInteraction.classList.remove("task-panel-open");
   scenarioSheet.classList.remove("show");
   scenarioSheet.setAttribute("aria-hidden", "true");
 }
 
 chatMenuBtn.addEventListener("click", () => showScreen("sidebar"));
+
+topModeTabs.addEventListener("click", (event) => {
+  const tab = event.target.closest(".top-mode-tab");
+  if (!tab) return;
+  showScreen(tab.dataset.mode === "task" ? "chatTaskAssistant" : "chat");
+});
 
 keyboardToggle.addEventListener("click", () => {
   setKeyboardMode(!chatInteraction.classList.contains("keyboard-mode"));
@@ -930,6 +1074,18 @@ promptSuggest.addEventListener("click", (event) => {
   chatInput.focus();
 });
 
+chatHome.addEventListener("click", (event) => {
+  const action = event.target.closest("[data-prompt]");
+  if (!action) return;
+  fillPromptToInput(action.dataset.prompt || "");
+});
+
+taskAssistantPanel.addEventListener("click", (event) => {
+  const action = event.target.closest("[data-prompt]");
+  if (!action) return;
+  fillPromptToInput(action.dataset.prompt || "");
+});
+
 chatInput.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || event.shiftKey) return;
   event.preventDefault();
@@ -958,7 +1114,26 @@ document.querySelectorAll(".chat-chip").forEach((chip) => {
     }
     document.querySelectorAll(".chat-chip").forEach((item) => item.classList.remove("selected"));
     chip.classList.add("selected");
+    if (chip.dataset.tab === "任务助手") {
+      scenarioSheet.classList.remove("show");
+      scenarioSheet.setAttribute("aria-hidden", "true");
+      plusPanel.classList.remove("show");
+      chatInteraction.classList.add("task-panel-open");
+      return;
+    }
+    if (chip.dataset.tab === "AI交易员") {
+      appendTraderCard();
+      return;
+    }
+    chatInteraction.classList.remove("task-panel-open");
     openScenarioSheet(chip.dataset.tab || "技能");
+  });
+});
+
+taskPanelBack.addEventListener("click", () => {
+  chatInteraction.classList.remove("task-panel-open");
+  document.querySelectorAll(".chat-chip").forEach((item) => {
+    item.classList.toggle("selected", item.dataset.tab === "技能");
   });
 });
 
@@ -980,6 +1155,15 @@ scenarioList.addEventListener("click", (event) => {
 });
 
 chatStream.addEventListener("click", (event) => {
+  const traderAction = event.target.closest("[data-trader-action]");
+  if (traderAction) {
+    const prompt = traderAction.dataset.traderAction === "plan"
+      ? "帮我围绕“再跌就卖出复旦微电和中芯国际一定仓位”制定交易计划，包括触发条件、卖出比例、风险提示和执行步骤"
+      : "调整派单要求：再跌就卖出复旦微电和中芯国际一定仓位";
+    fillPromptToInput(prompt);
+    return;
+  }
+
   const runButton = event.target.closest('[data-action="subscribe-run"]');
   if (runButton) {
     runButton.classList.add("done");
