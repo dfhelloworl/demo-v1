@@ -1,12 +1,17 @@
 const screens = {
+  watchlist: {
+    src: "./assets/screens/watchlist.png",
+    scrollHotspots: [],
+    fixedHotspots: []
+  },
   marketGenerated: {
-    src: "./assets/screens/market-long.png",
+    src: "./assets/screens/market-with-guide.png",
     confirm: true,
     scrollHotspots: [
       { label: "去定制", x: 68, y: 15.2, w: 23, h: 5.6, target: "customize" }
     ],
     fixedHotspots: [],
-    guide: { layer: "scroll", x: 68, y: 20.2, w: 23, h: 5.6 }
+    guide: { layer: "scroll", x: 68, y: 15.2, w: 23, h: 5.6 }
   },
   market: {
     src: "./assets/screens/market-long.png",
@@ -29,7 +34,7 @@ const screens = {
     guide: { layer: "fixed", x: 60, y: 0, w: 20, h: 100 }
   },
   chat: {
-    src: "./assets/screens/chat-entry.png",
+    src: "./assets/screens/chat-entry-no-tabs.png",
     scrollHotspots: [
       { label: "返回报告工作区", x: 3.5, y: 6.6, w: 9, h: 7, target: "report" },
       { label: "侧边栏", x: 12, y: 6.8, w: 7.5, h: 3, target: "sidebar" }
@@ -49,7 +54,7 @@ const screens = {
     guide: { layer: "scroll", x: 82, y: 5, w: 18, h: 88 }
   },
   gridParams: {
-    src: "./assets/screens/grid-params-chat.png",
+    src: "./assets/screens/grid-params-chat-no-tabs.png",
     scrollHotspots: [
       { label: "返回侧边栏", x: 3.5, y: 6, w: 8, h: 6, target: "sidebar" },
       { label: "继续运行", x: 10.5, y: 70.5, w: 77, h: 4.2, target: "gridParamsRunning" }
@@ -111,6 +116,13 @@ const navItems = {
       inactive: "./assets/nav-icons/stock_unchosen.png"
     }
   },
+  watchlist: {
+    target: "watchlist",
+    icons: {
+      active: "./assets/nav-icons/watchlist_chosen.png",
+      inactive: "./assets/nav-icons/watchlist_unchosen.png"
+    }
+  },
   watch: {
     target: "report",
     icons: {
@@ -155,6 +167,7 @@ const guideLayer = document.querySelector("#guideLayer");
 const moreModal = document.querySelector("#moreModal");
 const chatInteraction = document.querySelector("#chatInteraction");
 const chatStream = document.querySelector("#chatStream");
+const chatTabs = document.querySelector(".chat-tabs");
 const chatMenuBtn = document.querySelector("#chatMenuBtn");
 const chatInputBar = document.querySelector("#chatInputBar");
 const chatInput = document.querySelector("#chatInput");
@@ -286,13 +299,39 @@ function setKycGuide() {
   setGuideToElement(kycScreen.querySelector(".kyc-card.kyc-short"));
 }
 
+function syncChatTabsScrollPosition() {
+  const offset = activeKey === "chat" ? -scrollArea.scrollTop : 0;
+  chatTabs.style.setProperty("--chat-tabs-scroll-y", `${offset}px`);
+}
+
+function setFollowupGuideToElement(selector) {
+  const element = document.querySelector(selector);
+  const scrollContainer = element?.closest(".chat-tabs");
+
+  if (scrollContainer) {
+    const containerRect = scrollContainer.getBoundingClientRect();
+    const targetRect = element.getBoundingClientRect();
+    const rightOverflow = targetRect.right - (containerRect.right - 6);
+    const leftOverflow = (containerRect.left + 6) - targetRect.left;
+
+    if (rightOverflow > 0) scrollContainer.scrollLeft += rightOverflow;
+    else if (leftOverflow > 0) scrollContainer.scrollLeft -= leftOverflow;
+  }
+
+  requestAnimationFrame(() => {
+    if (followupGuideSelector !== selector || guideDismissed) return;
+    setGuideToElement(element);
+  });
+}
+
 function setActiveScreenGuide(screen = screens[activeKey]) {
   if (guideDismissed) {
     guideLayer.hidden = true;
     return;
   }
   if (followupGuideSelector) {
-    setGuideToElement(document.querySelector(followupGuideSelector), -scrollArea.scrollTop);
+    guideLayer.hidden = true;
+    setFollowupGuideToElement(followupGuideSelector);
     return;
   }
   if (followupGuideNav) {
@@ -341,6 +380,7 @@ function showScreen(key, nextGuideSelector = null) {
   const afterImageReady = () => {
     syncHotspotLayerHeight();
     scrollArea.scrollTo({ top: 0, behavior: "auto" });
+    syncChatTabsScrollPosition();
     requestAnimationFrame(() => {
       if (modalGuideActive) {
         setMoreModalGuide();
@@ -368,6 +408,8 @@ function updateNavState(screenKey = activeKey, forceMore = false) {
     ? "more"
     : screenKey === "trans"
       ? "trans"
+      : screenKey === "watchlist"
+        ? "watchlist"
       : screenKey === "report"
         ? "watch"
         : screenKey === "chat" || screenKey === "sidebar"
@@ -406,6 +448,10 @@ kycScreen.querySelectorAll(".kyc-card").forEach((card) => {
 
 confirmCard.querySelector(".btn-customize").addEventListener("click", () => {
   showScreen("customize");
+});
+
+confirmCard.querySelector(".btn-recommend").addEventListener("click", () => {
+  showScreen("market");
 });
 
 document.querySelectorAll(".nav-item").forEach((item) => {
@@ -452,11 +498,16 @@ window.addEventListener("resize", () => {
   setActiveScreenGuide();
 });
 scrollArea.addEventListener("scroll", () => {
+  syncChatTabsScrollPosition();
   if (modalGuideActive) {
     setMoreModalGuide();
     return;
   }
   setActiveScreenGuide();
+}, { passive: true });
+chatTabs.addEventListener("scroll", () => {
+  if (!followupGuideSelector || guideDismissed) return;
+  setGuideToElement(document.querySelector(followupGuideSelector));
 }, { passive: true });
 showKyc();
 
