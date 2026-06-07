@@ -628,7 +628,7 @@ body {
   bottom: 22px;
   height: 58px;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   align-items: center;
   padding: 4px 8px;
   border-radius: 31px;

@@ -85,7 +85,7 @@ const screens = {
     guide: null
   },
   chat: {
-    src: "./assets/screens/chat-entry.png",
+    src: "./assets/screens/chat-entry-no-tabs.png",
     scrollHotspots: [
       { label: "返回报告工作区", x: 3.5, y: 6.6, w: 9, h: 7, target: "report" },
       { label: "侧边栏", x: 12, y: 6.8, w: 7.5, h: 3, target: "sidebar" }
