@@ -53,7 +53,17 @@ const screens = {
   account: {
     src: "./assets/screens/account.png",
     scrollHotspots: [
-      { label: "关闭我的账户", x: 2.5, y: 5.2, w: 10, h: 6, target: "accountReturn" }
+      { label: "关闭我的账户", x: 2.5, y: 5.2, w: 10, h: 6, target: "market" },
+      { label: "查看账户管家分析", x: 3, y: 35.2, w: 94, h: 7.5, target: "accountMng" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
+  accountMng: {
+    src: "./assets/screens/account-mng.png",
+    scrollHotspots: [
+      { label: "点击上方关闭账户管家", x: 0, y: 0, w: 100, h: 12.5, target: "account" },
+      { label: "关闭账户管家", x: 89, y: 12.5, w: 11, h: 10, target: "account" }
     ],
     fixedHotspots: [],
     guide: null
@@ -67,9 +77,9 @@ const screens = {
     guide: null
   },
   aiTrader: {
-    src: "./assets/screens/ai-trader.png",
+    src: "./assets/screens/ai-trader.jpg",
     scrollHotspots: [
-      { label: "关闭AI交易员", x: 2.5, y: 4.5, w: 10, h: 6, target: "report" }
+      { label: "关闭AI交易员", x: 2.5, y: 5.2, w: 12, h: 7, target: "report" }
     ],
     fixedHotspots: [],
     guide: null
@@ -173,9 +183,19 @@ const screens = {
   },
   trans: {
     src: "./assets/screens/trans.png",
-    scrollHotspots: [],
+    scrollHotspots: [
+      { label: "打开AI交易员", x: 38, y: 4.5, w: 34, h: 8.5, target: "aiTrader2" }
+    ],
     fixedHotspots: [],
     guide: { id: "trans-more-nav", layer: "fixed", x: 80, y: 0, w: 20, h: 100 }
+  },
+  aiTrader2: {
+    src: "./assets/screens/ai-trader-2.png",
+    scrollHotspots: [
+      { label: "关闭", x: 0, y: 0, w: 100, h: 10, target: "trans" }
+    ],
+    fixedHotspots: [],
+    guide: null
   }
 };
 
@@ -328,7 +348,7 @@ function renderHotspots(screen) {
 }
 
 function syncBottomBarVisibility() {
-  bottomBar.hidden = ["kyc", "customize", "configPage", "sidebar", "chat", "account", "specialNotice", "aiTrader"].includes(activeKey)
+  bottomBar.hidden = ["kyc", "customize", "configPage", "sidebar", "chat", "account", "accountMng", "specialNotice", "aiTrader", "aiTrader2"].includes(activeKey)
     || activeKey.startsWith("chatTask");
 }
 
@@ -577,11 +597,11 @@ async function showScreen(key, nextGuideSelector = null) {
 function updateNavState(screenKey = activeKey, forceMore = false) {
   const nextActive = forceMore
     ? "more"
-    : screenKey === "trans"
+    : screenKey === "trans" || screenKey === "aiTrader2"
       ? "trans"
       : screenKey === "watchlist"
         ? "watchlist"
-      : screenKey === "report" || screenKey === "account" || screenKey === "specialNotice" || screenKey === "aiTrader"
+      : screenKey === "report" || screenKey === "account" || screenKey === "accountMng" || screenKey === "specialNotice" || screenKey === "aiTrader"
         ? "watch"
         : screenKey === "chat" || screenKey.startsWith("chatTask") || screenKey === "sidebar"
           ? "chat"
@@ -692,7 +712,9 @@ function closeMoreModal(nextGuideNav = null) {
 }
 
 moreMenu.querySelector(".more-menu-backdrop").addEventListener("click", () => closeMoreMenu());
-moreMenu.querySelector(".more-menu-close").addEventListener("click", () => closeMoreMenu());
+moreMenu.querySelectorAll(".more-menu-close").forEach((button) => {
+  button.addEventListener("click", () => closeMoreMenu());
+});
 moreMenu.querySelector(".more-menu-custom-nav").addEventListener("click", () => openMoreCustomizeModal());
 
 moreModal.querySelector(".more-backdrop").addEventListener("click", () => closeMoreModal());
@@ -1010,6 +1032,15 @@ function openScenarioSheet(tabName) {
   plusPanel.classList.remove("show");
 }
 
+function hidePreviousTabModule() {
+  chatInteraction.classList.remove("chat-active", "task-panel-open");
+  chatStream.classList.remove("show");
+  scenarioSheet.classList.remove("show");
+  scenarioSheet.setAttribute("aria-hidden", "true");
+  plusPanel.classList.remove("show");
+  plusPanel.setAttribute("aria-hidden", "true");
+}
+
 function fillPromptToInput(prompt) {
   setKeyboardMode(true);
   chatInput.value = prompt;
@@ -1114,10 +1145,8 @@ document.querySelectorAll(".chat-chip").forEach((chip) => {
     }
     document.querySelectorAll(".chat-chip").forEach((item) => item.classList.remove("selected"));
     chip.classList.add("selected");
+    hidePreviousTabModule();
     if (chip.dataset.tab === "任务助手") {
-      scenarioSheet.classList.remove("show");
-      scenarioSheet.setAttribute("aria-hidden", "true");
-      plusPanel.classList.remove("show");
       chatInteraction.classList.add("task-panel-open");
       return;
     }
