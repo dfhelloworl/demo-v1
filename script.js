@@ -234,7 +234,11 @@ function renderHotspots(screen) {
     fixedHotspotsLayer.appendChild(makeHotspot(spot, "fixed-hotspot"));
   });
 
-  bottomBar.hidden = ["kyc", "customize", "sidebar"].includes(activeKey);
+  syncBottomBarVisibility();
+}
+
+function syncBottomBarVisibility() {
+  bottomBar.hidden = ["kyc", "customize", "sidebar", "chat"].includes(activeKey);
 }
 
 function syncHotspotLayerHeight() {
@@ -425,7 +429,7 @@ function updateNavState(screenKey = activeKey, forceMore = false) {
 function showKyc() {
   activeKey = "kyc";
   kycScreen.hidden = false;
-  bottomBar.hidden = true;
+  syncBottomBarVisibility();
   confirmCard.hidden = true;
   hotspotsLayer.innerHTML = "";
   fixedHotspotsLayer.innerHTML = "";
