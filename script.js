@@ -274,7 +274,7 @@ function setGuide(guide, handSide = "right") {
   applyGuideBounds(x, y, w, h, handSide);
 }
 
-function setGuideToElement(element, offsetY = 0) {
+function setGuideToElement(element, offsetY = 0, handSide = "right") {
   guideLayer.hidden = !element;
   if (!element) return;
 
@@ -285,14 +285,11 @@ function setGuideToElement(element, offsetY = 0) {
   const w = targetRect.width;
   const h = targetRect.height;
 
-  applyGuideBounds(x, y, w, h);
+  applyGuideBounds(x, y, w, h, handSide);
 }
 
 function setMoreModalGuide() {
-  guideLayer.hidden = false;
-  applyGuideBounds(307.986612, 99.789063, 42.17125, 42.17125, "left");
-  guideLayer.style.setProperty("--hand-x", "258.986612px");
-  guideLayer.style.setProperty("--hand-y", "137.9603125px");
+  setGuideToElement(moreModal.querySelector(".more-close-right"), 0, "left");
 }
 
 function setKycGuide() {
