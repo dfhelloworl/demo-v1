@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI涨乐 清洁版手机 Demo</title>
+    <title>AI涨乐 清洁版手机 Demo v2.0</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -12,12 +12,57 @@
         <div class="iphone">
           <div class="island"></div>
           <div class="screen" id="phoneScreen">
+            <section class="kyc-screen" id="kycScreen" aria-label="首页定制">
+              <div class="kyc-content">
+                <div class="kyc-kicker">新手工作区生成</div>
+                <h1>先认识一下你的投资习惯</h1>
+                <p>选择最接近你的客群，我会自动生成首页卡片和默认导航。</p>
+                <div class="kyc-grid">
+                  <button class="kyc-card kyc-newbie" type="button" data-target="market">
+                    <strong>小白用户</strong>
+                    <span>从基础行情和解释开始</span>
+                  </button>
+                  <button class="kyc-card kyc-short" type="button" data-target="market">
+                    <strong>短线用户</strong>
+                    <span>关注异动、信号、交易机会</span>
+                  </button>
+                  <button class="kyc-card kyc-wealth" type="button" data-target="market">
+                    <strong>理财用户</strong>
+                    <span>看账户、收益和资产配置</span>
+                  </button>
+                  <button class="kyc-card kyc-custom" type="button" data-target="market">
+                    <strong>自定义</strong>
+                    <span>告诉我你的需求或上传截图</span>
+                  </button>
+                </div>
+                <div class="kyc-orbit" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </section>
             <div class="scroll-area" id="scrollArea">
               <img id="screenImage" alt="AI涨乐页面" draggable="false" />
+              <img class="confirm-card" id="confirmCard" src="./assets/screens/generated-confirm.png" alt="" draggable="false" hidden />
               <div class="hotspots" id="hotspots"></div>
             </div>
             <div class="bottom-bar" id="bottomBar">
-              <img src="./assets/bottom-bar/bottom-bar.svg" alt="" draggable="false" />
+              <button class="nav-item" type="button" data-nav="market" aria-label="大盘">
+                <img data-role="icon" alt="" draggable="false" />
+              </button>
+              <button class="nav-item" type="button" data-nav="watch" aria-label="资讯">
+                <img data-role="icon" alt="" draggable="false" />
+              </button>
+              <button class="nav-item" type="button" data-nav="chat" aria-label="长按说话">
+                <img data-role="icon" alt="" draggable="false" />
+              </button>
+              <button class="nav-item" type="button" data-nav="trans" aria-label="交易">
+                <img data-role="icon" alt="" draggable="false" />
+              </button>
+              <button class="nav-item" type="button" data-nav="more" aria-label="更多">
+                <img data-role="icon" alt="" draggable="false" />
+              </button>
               <div class="fixed-hotspots" id="fixedHotspots"></div>
             </div>
             <div class="guide-layer" id="guideLayer" aria-hidden="true">
@@ -26,6 +71,90 @@
                 <span class="finger"></span>
                 <span class="palm"></span>
               </div>
+            </div>
+            <div class="chat-interaction" id="chatInteraction" aria-hidden="true">
+              <div class="home-card-mask" id="homeCardMask" aria-hidden="true"></div>
+              <button class="chat-menu-hit" id="chatMenuBtn" type="button" aria-label="打开侧边栏"></button>
+
+              <section class="chat-stream" id="chatStream" aria-label="对话流"></section>
+
+              <section class="chat-tabs" aria-label="技能栏">
+                <button class="chat-chip selected" type="button" data-tab="分析" aria-label="分析"></button>
+                <button class="chat-chip" type="button" data-tab="选股" aria-label="选股"></button>
+                <button class="chat-chip" type="button" data-tab="盯盘" aria-label="盯盘"></button>
+                <button class="chat-chip" type="button" data-tab="交易" aria-label="交易"></button>
+                <button class="chat-chip" type="button" data-tab="定时" aria-label="定时"></button>
+                <button class="chat-chip" type="button" data-tab="复杂任务" aria-label="复杂任务"></button>
+              </section>
+
+              <section class="chat-input-bar" id="chatInputBar" aria-label="输入栏">
+                <div class="voice-label" id="voiceLabel">🎤 按住说话</div>
+                <div class="chat-input-wrap" id="chatInputWrap">
+                  <div class="input-attachments" id="inputAttachments"></div>
+                  <textarea class="chat-input" id="chatInput" placeholder="请输入内容..."></textarea>
+                  <div class="prompt-suggest" id="promptSuggest">
+                    <button class="prompt-chip" type="button" data-prompt="利好利空">利好利空</button>
+                    <button class="prompt-chip" type="button" data-prompt="AI求真">AI求真</button>
+                    <button class="prompt-chip" type="button" data-prompt="分析一下 K 线">分析一下 K 线</button>
+                  </div>
+                </div>
+                <div class="chat-input-actions">
+                  <button class="round-action" id="keyboardToggle" type="button" aria-label="切换键盘">⌨</button>
+                  <button class="round-action" id="plusEntryBtn" type="button" aria-label="添加">＋</button>
+                </div>
+              </section>
+
+              <section class="plus-panel" id="plusPanel" aria-hidden="true">
+                <div class="multi-actions">
+                  <button type="button">📷<span>相机</span></button>
+                  <button type="button">🖼️<span>照片</span></button>
+                  <button type="button">📄<span>文件</span></button>
+                  <button type="button">🔗<span>链接</span></button>
+                </div>
+                <p>最近图片</p>
+                <div class="recent-grid" id="recentGrid">
+                  <button class="recent-thumb kline" type="button" data-image="K线截图" data-type="kline"><span>×</span></button>
+                  <button class="recent-thumb news" type="button" data-image="财经新闻截图" data-type="news"><span>×</span></button>
+                  <button class="recent-thumb stock-list" type="button" data-image="股票列表截图" data-type="stock-list"><span>×</span></button>
+                </div>
+                <button class="add-images-btn" id="addImagesBtn" type="button" disabled>添加图片</button>
+              </section>
+
+              <section class="scenario-sheet" id="scenarioSheet" aria-hidden="true">
+                <div class="sheet-head">
+                  <strong id="scenarioTitle">技能</strong>
+                  <button id="scenarioClose" type="button" aria-label="关闭">×</button>
+                </div>
+                <p id="scenarioDesc">选择一个场景快速填入指令。</p>
+                <div class="scenario-list" id="scenarioList"></div>
+              </section>
+
+              <section class="task-edit-sheet" id="taskEditSheet" aria-hidden="true">
+                <div class="sheet-head">
+                  <strong>定时任务设置</strong>
+                  <button id="taskEditClose" type="button" aria-label="关闭">×</button>
+                </div>
+                <label>任务内容<textarea id="editTaskContent">生成每日收盘报告，需要分析：大盘走势、板块联动、资金动向</textarea></label>
+                <label>执行时间<input id="editTaskTime" value="17:30" /></label>
+                <label>执行频率<input id="editTaskFreq" value="每个交易日" /></label>
+                <div class="edit-actions">
+                  <button id="editSubscribe" type="button">订阅定时</button>
+                  <button id="editRun" type="button">订阅并试运行</button>
+                </div>
+              </section>
+
+              <div class="fake-keyboard" id="fakeKeyboard" aria-hidden="true">
+                <div>Q W E R T Y U I O P</div>
+                <div>A S D F G H J K L</div>
+                <div>⇧ Z X C V B N M ⌫</div>
+                <div>123　　　　　space　　　　　完成</div>
+              </div>
+            </div>
+            <div class="more-modal" id="moreModal" hidden>
+              <button class="more-backdrop" type="button" aria-label="关闭更多"></button>
+              <img src="./assets/screens/more.png" alt="更多浮窗" draggable="false" />
+              <button class="more-close more-close-left" type="button" aria-label="完成"></button>
+              <button class="more-close more-close-right" type="button" aria-label="关闭"></button>
             </div>
           </div>
         </div>
