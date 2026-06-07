@@ -247,6 +247,37 @@ function setGuide(guide) {
   guideLayer.style.setProperty("--hand-y", `${y + h - 6}px`);
 }
 
+function setGuideToElement(element) {
+  guideLayer.hidden = !element;
+  if (!element) return;
+
+  const screenRect = document.querySelector("#phoneScreen").getBoundingClientRect();
+  const targetRect = element.getBoundingClientRect();
+  const x = targetRect.left - screenRect.left;
+  const y = targetRect.top - screenRect.top;
+  const w = targetRect.width;
+  const h = targetRect.height;
+
+  guideLayer.style.setProperty("--guide-x", `${x}px`);
+  guideLayer.style.setProperty("--guide-y", `${y}px`);
+  guideLayer.style.setProperty("--guide-w", `${w}px`);
+  guideLayer.style.setProperty("--guide-h", `${h}px`);
+  guideLayer.style.setProperty("--hand-x", `${x + w - 10}px`);
+  guideLayer.style.setProperty("--hand-y", `${y + h - 6}px`);
+}
+
+function setKycGuide() {
+  setGuideToElement(kycScreen.querySelector(".kyc-card.kyc-short"));
+}
+
+function setActiveScreenGuide(screen = screens[activeKey]) {
+  if (activeKey === "marketGenerated") {
+    setGuideToElement(confirmCard.querySelector(".btn-customize"));
+    return;
+  }
+  setGuide(screen?.guide);
+}
+
 function showScreen(key) {
   const screen = screens[key];
   activeKey = key;
@@ -268,13 +299,13 @@ function showScreen(key) {
         setGuide({ layer: "screen", x: 84.5, y: 15.8, w: 11, h: 8.5 });
         return;
       }
-      setGuide(screen.guide);
+      setActiveScreenGuide(screen);
       requestAnimationFrame(() => {
         if (modalGuideActive) {
           setGuide({ layer: "screen", x: 84.5, y: 15.8, w: 11, h: 8.5 });
           return;
         }
-        setGuide(screen.guide);
+        setActiveScreenGuide(screen);
       });
     });
   };
@@ -313,11 +344,17 @@ function showKyc() {
   hotspotsLayer.innerHTML = "";
   fixedHotspotsLayer.innerHTML = "";
   moreModal.hidden = true;
-  setGuide({ layer: "screen", x: 51, y: 19, w: 40, h: 18 });
+  requestAnimationFrame(setKycGuide);
 }
 
 kycScreen.querySelectorAll(".kyc-card").forEach((card) => {
-  card.addEventListener("click", () => showScreen("marketGenerated"));
+  card.addEventListener("click", () => {
+    kycScreen.querySelectorAll(".kyc-card").forEach((item) => {
+      item.classList.toggle("is-selected", item === card);
+      item.classList.toggle("is-muted", item !== card);
+    });
+    setTimeout(() => showScreen("marketGenerated"), 260);
+  });
 });
 
 document.querySelectorAll(".nav-item").forEach((item) => {
@@ -342,7 +379,7 @@ function closeMoreModal() {
     setGuide({ layer: "fixed", x: 40, y: 0, w: 20, h: 100 });
     return;
   }
-  setGuide(screens[activeKey].guide);
+  setActiveScreenGuide();
 }
 
 moreModal.querySelector(".more-backdrop").addEventListener("click", closeMoreModal);
@@ -357,17 +394,17 @@ window.addEventListener("resize", () => {
     return;
   }
   if (activeKey === "kyc") {
-    setGuide({ layer: "screen", x: 51, y: 19, w: 40, h: 18 });
+    setKycGuide();
     return;
   }
-  setGuide(screens[activeKey]?.guide);
+  setActiveScreenGuide();
 });
 scrollArea.addEventListener("scroll", () => {
   if (modalGuideActive) {
     setGuide({ layer: "screen", x: 84.5, y: 15.8, w: 11, h: 8.5 });
     return;
   }
-  setGuide(screens[activeKey]?.guide);
+  setActiveScreenGuide();
 }, { passive: true });
 showKyc();
 
