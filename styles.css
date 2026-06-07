@@ -608,9 +608,10 @@ body {
   position: relative;
   display: grid;
   place-items: center;
+  justify-self: center;
   gap: 1px;
-  min-width: 0;
-  height: 50px;
+  width: 51px;
+  height: 55px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -620,8 +621,8 @@ body {
 }
 
 .nav-item img {
-  width: 55px;
-  height: 55px;
+  width: 51px;
+  height: auto;
   object-fit: contain;
   user-select: none;
 }

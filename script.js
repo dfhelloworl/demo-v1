@@ -408,6 +408,8 @@ function updateNavState(screenKey = activeKey, forceMore = false) {
     ? "more"
     : screenKey === "trans"
       ? "trans"
+      : screenKey === "watchlist"
+        ? "watchlist"
       : screenKey === "report"
         ? "watch"
         : screenKey === "chat" || screenKey === "sidebar"
