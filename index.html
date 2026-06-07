@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI涨乐 清洁版手机 Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="demo-shell">
+      <section class="phone-wrap" aria-label="iPhone 手机原型">
+        <div class="iphone">
+          <div class="island"></div>
+          <div class="screen" id="phoneScreen">
+            <div class="scroll-area" id="scrollArea">
+              <img id="screenImage" alt="AI涨乐页面" draggable="false" />
+              <div class="hotspots" id="hotspots"></div>
+            </div>
+            <div class="bottom-bar" id="bottomBar">
+              <img src="./assets/bottom-bar/bottom-bar.svg" alt="" draggable="false" />
+              <div class="fixed-hotspots" id="fixedHotspots"></div>
+            </div>
+            <div class="guide-layer" id="guideLayer" aria-hidden="true">
+              <div class="guide-target"></div>
+              <div class="guide-hand">
+                <span class="finger"></span>
+                <span class="palm"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
