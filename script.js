@@ -166,6 +166,7 @@ const bottomBar = document.querySelector("#bottomBar");
 const guideLayer = document.querySelector("#guideLayer");
 const moreMenu = document.querySelector("#moreMenu");
 const moreModal = document.querySelector("#moreModal");
+const screenStage = document.querySelector("#screenStage");
 const chatInteraction = document.querySelector("#chatInteraction");
 const chatStream = document.querySelector("#chatStream");
 const chatTabs = document.querySelector(".chat-tabs");
@@ -197,6 +198,7 @@ let activeKey = "kyc";
 let activeNav = "market";
 let moreMenuActive = false;
 let modalGuideActive = false;
+let sidebarEnteredFromChat = false;
 let followupGuideNav = null;
 let followupGuideSelector = null;
 let guideDismissed = false;
@@ -247,6 +249,26 @@ function syncBottomBarVisibility() {
 
 function syncHotspotLayerHeight() {
   hotspotsLayer.style.height = `${image.offsetHeight}px`;
+}
+
+function runScreenSlide(className) {
+  return new Promise((resolve) => {
+    screenStage.classList.remove("is-sliding-in-from-left", "is-sliding-out-to-left");
+    screenStage.classList.add(className);
+
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      screenStage.removeEventListener("animationend", finish);
+      clearTimeout(timer);
+      screenStage.classList.remove(className);
+      resolve();
+    };
+
+    const timer = setTimeout(finish, 380);
+    screenStage.addEventListener("animationend", finish);
+  });
 }
 
 function applyGuideBounds(x, y, w, h, handSide = "right") {
@@ -392,8 +414,23 @@ function setActiveScreenGuide(screen = screens[activeKey]) {
   setGuide(screen?.guide);
 }
 
-function showScreen(key, nextGuideSelector = null) {
+async function showScreen(key, nextGuideSelector = null) {
+  if (key === "chat" && activeKey === "sidebar" && sidebarEnteredFromChat) {
+    guideLayer.hidden = true;
+    await runScreenSlide("is-sliding-out-to-left");
+    sidebarEnteredFromChat = false;
+    showScreen(key, nextGuideSelector);
+    return;
+  }
+
   const screen = screens[key];
+  const slideInFromLeft = key === "sidebar" && activeKey === "chat";
+  if (slideInFromLeft) {
+    sidebarEnteredFromChat = true;
+  } else if (key !== "sidebar") {
+    sidebarEnteredFromChat = false;
+  }
+
   activeKey = key;
   moreMenuActive = false;
   modalGuideActive = false;
@@ -410,7 +447,8 @@ function showScreen(key, nextGuideSelector = null) {
   moreMenu.hidden = true;
   moreModal.hidden = true;
   confirmCard.hidden = !screen.confirm;
-  const afterImageReady = () => {
+
+  const revealScreen = () => {
     syncHotspotLayerHeight();
     scrollArea.scrollTo({ top: 0, behavior: "auto" });
     syncChatTabsScrollPosition();
@@ -429,6 +467,15 @@ function showScreen(key, nextGuideSelector = null) {
       });
     });
   };
+
+  const afterImageReady = async () => {
+    if (slideInFromLeft) {
+      guideLayer.hidden = true;
+      await runScreenSlide("is-sliding-in-from-left");
+    }
+    revealScreen();
+  };
+
   image.onload = afterImageReady;
   image.src = `${screen.src}?v=${assetVersion}`;
   renderHotspots(screen);
@@ -460,6 +507,8 @@ function updateNavState(screenKey = activeKey, forceMore = false) {
 
 function showKyc() {
   activeKey = "kyc";
+  sidebarEnteredFromChat = false;
+  screenStage.classList.remove("is-sliding-in-from-left", "is-sliding-out-to-left");
   kycScreen.hidden = false;
   syncBottomBarVisibility();
   confirmCard.hidden = true;

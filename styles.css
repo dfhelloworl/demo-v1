@@ -498,11 +498,43 @@ body {
   display: none;
 }
 
+.screen-stage {
+  position: relative;
+}
+
 #screenImage {
   display: block;
   width: 100%;
   height: auto;
   user-select: none;
+}
+
+.screen-stage.is-sliding-in-from-left {
+  animation: screenSlideInFromLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.screen-stage.is-sliding-out-to-left {
+  animation: screenSlideOutToLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes screenSlideInFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes screenSlideOutToLeft {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 .confirm-card {
@@ -578,6 +610,13 @@ body {
   left: 0;
   width: 100%;
   pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-stage.is-sliding-in-from-left,
+  .screen-stage.is-sliding-out-to-left {
+    animation: none;
+  }
 }
 
 .bottom-bar {
