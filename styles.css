@@ -618,6 +618,7 @@ body {
   color: #202838;
   font: inherit;
   cursor: pointer;
+  bottom: 3px;
 }
 
 .nav-item img {
