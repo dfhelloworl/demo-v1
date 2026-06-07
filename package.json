@@ -1,0 +1,24 @@
+{
+  "name": "ai-zangle-clean-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "dev": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dfhelloworl/demo-v1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dfhelloworl/demo-v1/issues"
+  },
+  "homepage": "https://github.com/dfhelloworl/demo-v1#readme",
+  "devDependencies": {
+    "vite": "^8.0.16"
+  }
+}

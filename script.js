@@ -36,7 +36,6 @@ const screens = {
 
 const image = document.querySelector("#screenImage");
 const hotspotsLayer = document.querySelector("#hotspots");
-const fixedHotspotsLayer = document.querySelector("#fixedHotspots");
 const scrollArea = document.querySelector("#scrollArea");
 const bottomBar = document.querySelector("#bottomBar");
 const guideLayer = document.querySelector("#guideLayer");
@@ -61,17 +60,34 @@ function makeHotspot(spot, className) {
 
 function renderHotspots(screen) {
   hotspotsLayer.innerHTML = "";
-  fixedHotspotsLayer.innerHTML = "";
 
   screen.scrollHotspots.forEach((spot) => {
     hotspotsLayer.appendChild(makeHotspot(spot, "hotspot"));
   });
 
-  screen.fixedHotspots.forEach((spot) => {
-    fixedHotspotsLayer.appendChild(makeHotspot(spot, "fixed-hotspot"));
+  // We no longer render fixed hotspots as invisible buttons, 
+  // because we use real SVG elements in the bottom bar now.
+  // But we still use fixedHotspots array to determine bottomBar visibility.
+  bottomBar.hidden = screen.fixedHotspots.length === 0;
+
+  // Update active state of bottom bar tabs
+  document.querySelectorAll(".bb-tab").forEach(tab => {
+    if (tab.dataset.target === activeKey) {
+      tab.classList.add("active");
+    } else {
+      tab.classList.remove("active");
+    }
   });
 
-  bottomBar.hidden = screen.fixedHotspots.length === 0;
+  // Update tab images
+  const marketTab = document.querySelector('.bb-tab[data-target="market"] img');
+  if (marketTab) {
+    marketTab.src = activeKey === "market" ? "./assets/images/大盘-active.png" : "./assets/images/大盘-inactive.png";
+  }
+  const reportTab = document.querySelector('.bb-tab[data-target="report"] img');
+  if (reportTab) {
+    reportTab.src = activeKey === "report" ? "./assets/images/早点听-active.png" : "./assets/images/早点听-inactive.png";
+  }
 }
 
 function syncHotspotLayerHeight() {
@@ -119,4 +135,15 @@ window.addEventListener("resize", () => {
   setGuide(screens[activeKey].guide);
 });
 scrollArea.addEventListener("scroll", () => setGuide(screens[activeKey].guide), { passive: true });
+
+// Add click events to real bottom bar elements
+document.querySelectorAll(".bb-tab, .bb-chat").forEach(el => {
+  el.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (el.dataset.target) {
+      showScreen(el.dataset.target);
+    }
+  });
+});
+
 showScreen("market");
