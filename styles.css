@@ -583,12 +583,12 @@ body {
 .bottom-bar {
   position: absolute;
   z-index: 8;
-  left: 8%;
-  right: 8%;
+  left: 4%;
+  right: 4%;
   bottom: 22px;
   height: 58px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   align-items: center;
   padding: 4px 8px;
   border-radius: 31px;

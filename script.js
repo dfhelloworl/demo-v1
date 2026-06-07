@@ -1,12 +1,17 @@
 const screens = {
+  watchlist: {
+    src: "./assets/screens/watchlist.png",
+    scrollHotspots: [],
+    fixedHotspots: []
+  },
   marketGenerated: {
-    src: "./assets/screens/market-long.png",
+    src: "./assets/screens/market-with-guide.png",
     confirm: true,
     scrollHotspots: [
       { label: "去定制", x: 68, y: 15.2, w: 23, h: 5.6, target: "customize" }
     ],
     fixedHotspots: [],
-    guide: { layer: "scroll", x: 68, y: 20.2, w: 23, h: 5.6 }
+    guide: { layer: "scroll", x: 68, y: 15.2, w: 23, h: 5.6 }
   },
   market: {
     src: "./assets/screens/market-long.png",
@@ -109,6 +114,13 @@ const navItems = {
     icons: {
       active: "./assets/nav-icons/stock_chosen.png",
       inactive: "./assets/nav-icons/stock_unchosen.png"
+    }
+  },
+  watchlist: {
+    target: "watchlist",
+    icons: {
+      active: "./assets/nav-icons/watchlist_chosen.png",
+      inactive: "./assets/nav-icons/watchlist_unchosen.png"
     }
   },
   watch: {
@@ -434,6 +446,10 @@ kycScreen.querySelectorAll(".kyc-card").forEach((card) => {
 
 confirmCard.querySelector(".btn-customize").addEventListener("click", () => {
   showScreen("customize");
+});
+
+confirmCard.querySelector(".btn-recommend").addEventListener("click", () => {
+  showScreen("market");
 });
 
 document.querySelectorAll(".nav-item").forEach((item) => {
