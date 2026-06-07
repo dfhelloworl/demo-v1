@@ -3,7 +3,7 @@ const screens = {
     src: "./assets/screens/market-long.png",
     confirm: true,
     scrollHotspots: [
-      { label: "去定制", x: 68, y: 20.2, w: 23, h: 5.6, target: "customize" }
+      { label: "去定制", x: 68, y: 15.2, w: 23, h: 5.6, target: "customize" }
     ],
     fixedHotspots: [],
     guide: { layer: "scroll", x: 68, y: 20.2, w: 23, h: 5.6 }
@@ -20,7 +20,7 @@ const screens = {
       { label: "保存", x: 5, y: 91, w: 90, h: 7, target: "market" }
     ],
     fixedHotspots: [],
-    guide: { layer: "scroll", x: 5, y: 91, w: 90, h: 7 }
+    guide: { layer: "scroll", x: 5, y: 89.5, w: 90, h: 5 }
   },
   report: {
     src: "./assets/screens/morning-list.png",
@@ -32,10 +32,10 @@ const screens = {
     src: "./assets/screens/chat-entry.png",
     scrollHotspots: [
       { label: "返回报告工作区", x: 3.5, y: 6.6, w: 9, h: 7, target: "report" },
-      { label: "侧边栏", x: 12, y: 6.8, w: 7.5, h: 5.5, target: "sidebar" }
+      { label: "侧边栏", x: 12, y: 6.8, w: 7.5, h: 3, target: "sidebar" }
     ],
     fixedHotspots: [],
-    guide: { layer: "scroll", x: 12, y: 6.8, w: 7.5, h: 5.5 }
+    guide: { layer: "scroll", x: 12, y: 6.8, w: 7.5, h: 3 }
   },
   sidebar: {
     src: "./assets/screens/sidebar-tasks.png",
@@ -182,6 +182,9 @@ const fakeKeyboard = document.querySelector("#fakeKeyboard");
 let activeKey = "kyc";
 let activeNav = "market";
 let modalGuideActive = false;
+let followupGuideNav = null;
+let followupGuideSelector = null;
+let guideDismissed = false;
 let selectedImages = [];
 let pendingImages = [];
 
@@ -197,7 +200,11 @@ function makeHotspot(spot, className) {
   node.style.height = `${spot.h}%`;
   node.addEventListener("click", (event) => {
     event.preventDefault();
-    showScreen(event.currentTarget.dataset.target);
+    const target = event.currentTarget.dataset.target;
+    const nextGuideSelector = activeKey === "sidebar" && target === "chat"
+      ? '.chat-chip[data-tab="复杂任务"]'
+      : null;
+    showScreen(target, nextGuideSelector);
   });
   return node;
 }
@@ -221,7 +228,19 @@ function syncHotspotLayerHeight() {
   hotspotsLayer.style.height = `${image.offsetHeight}px`;
 }
 
-function setGuide(guide) {
+function applyGuideBounds(x, y, w, h, handSide = "right") {
+  const handOnLeft = handSide === "left";
+
+  guideLayer.classList.toggle("hand-left", handOnLeft);
+  guideLayer.style.setProperty("--guide-x", `${x}px`);
+  guideLayer.style.setProperty("--guide-y", `${y}px`);
+  guideLayer.style.setProperty("--guide-w", `${w}px`);
+  guideLayer.style.setProperty("--guide-h", `${h}px`);
+  guideLayer.style.setProperty("--hand-x", `${handOnLeft ? x - 54 : x + w - 10}px`);
+  guideLayer.style.setProperty("--hand-y", `${y + h - 6}px`);
+}
+
+function setGuide(guide, handSide = "right") {
   guideLayer.hidden = !guide;
   if (!guide) return;
 
@@ -239,31 +258,28 @@ function setGuide(guide) {
   const w = (guide.w / 100) * basis.width;
   const h = (guide.h / 100) * basis.height;
 
-  guideLayer.style.setProperty("--guide-x", `${x}px`);
-  guideLayer.style.setProperty("--guide-y", `${y}px`);
-  guideLayer.style.setProperty("--guide-w", `${w}px`);
-  guideLayer.style.setProperty("--guide-h", `${h}px`);
-  guideLayer.style.setProperty("--hand-x", `${x + w - 10}px`);
-  guideLayer.style.setProperty("--hand-y", `${y + h - 6}px`);
+  applyGuideBounds(x, y, w, h, handSide);
 }
 
-function setGuideToElement(element) {
+function setGuideToElement(element, offsetY = 0) {
   guideLayer.hidden = !element;
   if (!element) return;
 
   const screenRect = document.querySelector("#phoneScreen").getBoundingClientRect();
   const targetRect = element.getBoundingClientRect();
   const x = targetRect.left - screenRect.left;
-  const y = targetRect.top - screenRect.top;
+  const y = targetRect.top - screenRect.top + offsetY;
   const w = targetRect.width;
   const h = targetRect.height;
 
-  guideLayer.style.setProperty("--guide-x", `${x}px`);
-  guideLayer.style.setProperty("--guide-y", `${y}px`);
-  guideLayer.style.setProperty("--guide-w", `${w}px`);
-  guideLayer.style.setProperty("--guide-h", `${h}px`);
-  guideLayer.style.setProperty("--hand-x", `${x + w - 10}px`);
-  guideLayer.style.setProperty("--hand-y", `${y + h - 6}px`);
+  applyGuideBounds(x, y, w, h);
+}
+
+function setMoreModalGuide() {
+  guideLayer.hidden = false;
+  applyGuideBounds(307.986612, 99.789063, 42.17125, 42.17125, "left");
+  guideLayer.style.setProperty("--hand-x", "258.986612px");
+  guideLayer.style.setProperty("--hand-y", "137.9603125px");
 }
 
 function setKycGuide() {
@@ -271,17 +287,48 @@ function setKycGuide() {
 }
 
 function setActiveScreenGuide(screen = screens[activeKey]) {
+  if (guideDismissed) {
+    guideLayer.hidden = true;
+    return;
+  }
+  if (followupGuideSelector) {
+    setGuideToElement(document.querySelector(followupGuideSelector), -scrollArea.scrollTop);
+    return;
+  }
+  if (followupGuideNav) {
+    setGuideToElement(document.querySelector(`.nav-item[data-nav="${followupGuideNav}"]`));
+    return;
+  }
   if (activeKey === "marketGenerated") {
     setGuideToElement(confirmCard.querySelector(".btn-customize"));
+    return;
+  }
+  if (activeKey === "market") {
+    setGuideToElement(document.querySelector('.nav-item[data-nav="watch"]'));
+    return;
+  }
+  if (activeKey === "report") {
+    setGuideToElement(document.querySelector('.nav-item[data-nav="trans"]'));
+    return;
+  }
+  if (activeKey === "trans") {
+    setGuideToElement(document.querySelector('.nav-item[data-nav="more"]'));
+    return;
+  }
+  if (activeKey === "sidebar") {
+    setGuide(screen?.guide, "left");
     return;
   }
   setGuide(screen?.guide);
 }
 
-function showScreen(key) {
+function showScreen(key, nextGuideSelector = null) {
   const screen = screens[key];
   activeKey = key;
   modalGuideActive = false;
+  followupGuideNav = null;
+  followupGuideSelector = nextGuideSelector;
+  guideDismissed = false;
   const isChat = key === "chat";
   if (chatInteraction) {
     chatInteraction.classList.toggle("show", isChat);
@@ -296,13 +343,13 @@ function showScreen(key) {
     scrollArea.scrollTo({ top: 0, behavior: "auto" });
     requestAnimationFrame(() => {
       if (modalGuideActive) {
-        setGuide({ layer: "screen", x: 84.5, y: 15.8, w: 11, h: 8.5 });
+        setMoreModalGuide();
         return;
       }
       setActiveScreenGuide(screen);
       requestAnimationFrame(() => {
         if (modalGuideActive) {
-          setGuide({ layer: "screen", x: 84.5, y: 15.8, w: 11, h: 8.5 });
+          setMoreModalGuide();
           return;
         }
         setActiveScreenGuide(screen);
@@ -323,9 +370,9 @@ function updateNavState(screenKey = activeKey, forceMore = false) {
       ? "trans"
       : screenKey === "report"
         ? "watch"
-      : screenKey === "chat" || screenKey === "sidebar"
-        ? "chat"
-        : "market";
+        : screenKey === "chat" || screenKey === "sidebar"
+          ? "chat"
+          : "market";
 
   activeNav = nextActive;
   document.querySelectorAll(".nav-item").forEach((item) => {
@@ -357,40 +404,45 @@ kycScreen.querySelectorAll(".kyc-card").forEach((card) => {
   });
 });
 
+confirmCard.querySelector(".btn-customize").addEventListener("click", () => {
+  showScreen("customize");
+});
+
 document.querySelectorAll(".nav-item").forEach((item) => {
   item.addEventListener("click", () => {
     const key = item.dataset.nav;
     if (key === "more") {
       modalGuideActive = true;
+      followupGuideNav = null;
+      followupGuideSelector = null;
+      guideDismissed = false;
       moreModal.hidden = false;
       updateNavState(activeKey, true);
-      requestAnimationFrame(() => setGuide({ layer: "screen", x: 84.5, y: 15.8, w: 11, h: 8.5 }));
+      requestAnimationFrame(() => requestAnimationFrame(setMoreModalGuide));
       return;
     }
     showScreen(navItems[key].target);
   });
 });
 
-function closeMoreModal() {
+function closeMoreModal(nextGuideNav = null) {
   modalGuideActive = false;
+  followupGuideNav = nextGuideNav;
+  followupGuideSelector = null;
+  guideDismissed = false;
   moreModal.hidden = true;
   updateNavState(activeKey);
-  if (activeKey === "trans") {
-    setGuide({ layer: "fixed", x: 40, y: 0, w: 20, h: 100 });
-    return;
-  }
   setActiveScreenGuide();
 }
 
-moreModal.querySelector(".more-backdrop").addEventListener("click", closeMoreModal);
-moreModal.querySelectorAll(".more-close").forEach((button) => {
-  button.addEventListener("click", closeMoreModal);
-});
+moreModal.querySelector(".more-backdrop").addEventListener("click", () => closeMoreModal());
+moreModal.querySelector(".more-close-left").addEventListener("click", () => closeMoreModal());
+moreModal.querySelector(".more-close-right").addEventListener("click", () => closeMoreModal("chat"));
 
 window.addEventListener("resize", () => {
   syncHotspotLayerHeight();
   if (modalGuideActive) {
-    setGuide({ layer: "screen", x: 84.5, y: 15.8, w: 11, h: 8.5 });
+    setMoreModalGuide();
     return;
   }
   if (activeKey === "kyc") {
@@ -401,7 +453,7 @@ window.addEventListener("resize", () => {
 });
 scrollArea.addEventListener("scroll", () => {
   if (modalGuideActive) {
-    setGuide({ layer: "screen", x: 84.5, y: 15.8, w: 11, h: 8.5 });
+    setMoreModalGuide();
     return;
   }
   setActiveScreenGuide();
@@ -711,6 +763,11 @@ chatInput.addEventListener("input", () => {
 
 document.querySelectorAll(".chat-chip").forEach((chip) => {
   chip.addEventListener("click", () => {
+    if (followupGuideSelector && chip.matches(followupGuideSelector)) {
+      followupGuideSelector = null;
+      guideDismissed = true;
+      guideLayer.hidden = true;
+    }
     document.querySelectorAll(".chat-chip").forEach((item) => item.classList.remove("selected"));
     chip.classList.add("selected");
     openScenarioSheet(chip.dataset.tab || "技能");

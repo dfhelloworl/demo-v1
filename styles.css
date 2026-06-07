@@ -555,9 +555,17 @@ body {
 }
 
 .btn-customize {
+  position: relative;
   background: transparent;
   color: #2b6eff;
   border: 1px solid #2b6eff !important;
+}
+
+.btn-customize::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 28px;
 }
 
 .confirm-card[hidden] {
@@ -684,6 +692,10 @@ body {
   animation: handTap 1.35s ease-in-out infinite;
 }
 
+.guide-layer.hand-left .guide-hand {
+  animation-name: handTapMirrored;
+}
+
 .finger {
   position: absolute;
   right: 10px;
@@ -762,7 +774,7 @@ body {
 .more-close {
   position: absolute;
   z-index: 2;
-  top: 25.5%;
+  top: 12.75%;
   width: 18%;
   height: 7%;
   border: 0;
@@ -771,11 +783,11 @@ body {
 }
 
 .more-close-left {
-  left: 3%;
+  left: 1%;
 }
 
 .more-close-right {
-  right: 4%;
+  right: 1%;
 }
 
 .chat-interaction {
@@ -1220,8 +1232,8 @@ body {
 
 .chat-chip {
   position: absolute;
-  top: 0;
-  height: 100%;
+  top: -3px;
+  height: 60%;
   padding: 0;
   border: 0;
   border-radius: 17px;
@@ -1688,6 +1700,21 @@ body {
 
   68% {
     transform: translate(0, 0) rotate(-18deg) scale(0.94);
+  }
+}
+
+@keyframes handTapMirrored {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(18deg) scaleX(-1);
+  }
+
+  45% {
+    transform: translate(5px, -5px) rotate(18deg) scaleX(-1);
+  }
+
+  68% {
+    transform: translate(0, 0) rotate(18deg) scale(-0.94, 0.94);
   }
 }
 
