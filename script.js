@@ -164,6 +164,7 @@ const fixedHotspotsLayer = document.querySelector("#fixedHotspots");
 const scrollArea = document.querySelector("#scrollArea");
 const bottomBar = document.querySelector("#bottomBar");
 const guideLayer = document.querySelector("#guideLayer");
+const moreMenu = document.querySelector("#moreMenu");
 const moreModal = document.querySelector("#moreModal");
 const chatInteraction = document.querySelector("#chatInteraction");
 const chatStream = document.querySelector("#chatStream");
@@ -194,6 +195,7 @@ const editRun = document.querySelector("#editRun");
 const fakeKeyboard = document.querySelector("#fakeKeyboard");
 let activeKey = "kyc";
 let activeNav = "market";
+let moreMenuActive = false;
 let modalGuideActive = false;
 let followupGuideNav = null;
 let followupGuideSelector = null;
@@ -393,6 +395,7 @@ function setActiveScreenGuide(screen = screens[activeKey]) {
 function showScreen(key, nextGuideSelector = null) {
   const screen = screens[key];
   activeKey = key;
+  moreMenuActive = false;
   modalGuideActive = false;
   followupGuideNav = null;
   followupGuideSelector = nextGuideSelector;
@@ -404,6 +407,7 @@ function showScreen(key, nextGuideSelector = null) {
     if (!isChat) closeChatOverlays();
   }
   kycScreen.hidden = true;
+  moreMenu.hidden = true;
   moreModal.hidden = true;
   confirmCard.hidden = !screen.confirm;
   const afterImageReady = () => {
@@ -461,6 +465,8 @@ function showKyc() {
   confirmCard.hidden = true;
   hotspotsLayer.innerHTML = "";
   fixedHotspotsLayer.innerHTML = "";
+  moreMenu.hidden = true;
+  moreMenuActive = false;
   moreModal.hidden = true;
   requestAnimationFrame(setKycGuide);
 }
@@ -483,25 +489,60 @@ confirmCard.querySelector(".btn-recommend").addEventListener("click", () => {
   showScreen("market");
 });
 
+function openMoreMenu() {
+  moreMenuActive = true;
+  modalGuideActive = false;
+  followupGuideNav = null;
+  followupGuideSelector = null;
+  guideDismissed = false;
+  moreMenu.hidden = false;
+  moreModal.hidden = true;
+  guideLayer.hidden = true;
+  updateNavState(activeKey, true);
+}
+
+function closeMoreMenu() {
+  moreMenuActive = false;
+  moreMenu.hidden = true;
+  updateNavState(activeKey);
+  setActiveScreenGuide();
+}
+
+function openMoreCustomizeModal() {
+  moreMenuActive = false;
+  moreMenu.hidden = true;
+  modalGuideActive = true;
+  followupGuideNav = null;
+  followupGuideSelector = null;
+  guideDismissed = false;
+  moreModal.hidden = false;
+  requestAnimationFrame(() => requestAnimationFrame(setMoreModalGuide));
+}
+
 document.querySelectorAll(".nav-item").forEach((item) => {
   item.addEventListener("click", () => {
     const key = item.dataset.nav;
     if (key === "more") {
-      modalGuideActive = true;
-      followupGuideNav = null;
-      followupGuideSelector = null;
-      guideDismissed = false;
-      moreModal.hidden = false;
-      updateNavState(activeKey, true);
-      requestAnimationFrame(() => requestAnimationFrame(setMoreModalGuide));
+      if (!moreModal.hidden) {
+        closeMoreModal();
+        return;
+      }
+      if (moreMenuActive) {
+        closeMoreMenu();
+        return;
+      }
+      openMoreMenu();
       return;
     }
+    closeMoreMenu();
     showScreen(navItems[key].target);
   });
 });
 
 function closeMoreModal(nextGuideNav = null) {
   modalGuideActive = false;
+  moreMenuActive = false;
+  moreMenu.hidden = true;
   followupGuideNav = nextGuideNav;
   followupGuideSelector = null;
   guideDismissed = false;
@@ -509,6 +550,10 @@ function closeMoreModal(nextGuideNav = null) {
   updateNavState(activeKey);
   setActiveScreenGuide();
 }
+
+moreMenu.querySelector(".more-menu-backdrop").addEventListener("click", () => closeMoreMenu());
+moreMenu.querySelector(".more-menu-close").addEventListener("click", () => closeMoreMenu());
+moreMenu.querySelector(".more-menu-custom-nav").addEventListener("click", () => openMoreCustomizeModal());
 
 moreModal.querySelector(".more-backdrop").addEventListener("click", () => closeMoreModal());
 moreModal.querySelector(".more-close-left").addEventListener("click", () => closeMoreModal());
