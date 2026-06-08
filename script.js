@@ -30,6 +30,14 @@ const screens = {
       w: 23,
       h: 3.6,
       copy: "长按进行编辑页面"
+    },
+    nextGuide: {
+      id: "market-top-signal",
+      layer: "scroll",
+      x: 50,
+      y: 3.8,
+      w: 45,
+      h: 5.8
     }
   },
   customize: {
@@ -53,8 +61,8 @@ const screens = {
     src: "./assets/screens/morning-list.png",
     scrollHotspots: [
       { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
-      { label: "查看特别提醒", x: 6.8, y: 22.4, w: 86.4, h: 14.5, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 48, y: 30.4, w: 43, h: 3.8, target: "aiTrader" }
+      { label: "查看特别提醒", x: 6.8, y: 20.4, w: 86.4, h: 14.5, target: "specialNotice" },
+      { label: "呼叫AI交易员制定计划", x: 48, y: 27.4, w: 43, h: 3.8, target: "aiTrader" }
     ],
     fixedHotspots: [],
     guide: { id: "report-trans-nav", layer: "fixed", x: 60, y: 0, w: 20, h: 100 }
@@ -593,7 +601,10 @@ function setActiveScreenGuide(screen = screens[activeKey]) {
     return;
   }
   if (activeKey === "market") {
-    setGuide(screen?.guide);
+    const guide = dismissedGuideIds.has("market-edit-entry")
+      ? screen?.nextGuide
+      : screen?.guide;
+    setGuide(guide);
     return;
   }
   if (activeKey === "report") {
