@@ -857,6 +857,12 @@ body {
   pointer-events: none;
 }
 
+.guide-item {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 .guide-target {
   position: absolute;
   left: var(--guide-x, 0);
@@ -915,7 +921,7 @@ body {
   animation: handTap 1.35s ease-in-out infinite;
 }
 
-.guide-layer.hand-left .guide-hand {
+.guide-item.hand-left .guide-hand {
   animation-name: handTapMirrored;
 }
 

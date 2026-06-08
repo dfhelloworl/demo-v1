@@ -61,26 +61,60 @@ const screens = {
     src: "./assets/screens/morning-list.png",
     scrollHotspots: [
       { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
-      { label: "查看特别提醒", x: 6.8, y: 20.4, w: 86.4, h: 14.5, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 48, y: 27.4, w: 43, h: 3.8, target: "aiTrader" }
+      { label: "查看特别提醒", x: 6.8, y: 20.4, w: 86.4, h: 5.5, target: "specialNotice" },
+      { label: "呼叫AI交易员制定计划", x: 48, y: 28, w: 40, h: 2.0, target: "aiTrader" },
+      { label: "热点主题", x: 28, y: 34, w: 44, h: 2, target: "reportSubject" }
     ],
     fixedHotspots: [],
-    guide: { id: "report-trans-nav", layer: "fixed", x: 60, y: 0, w: 20, h: 100 }
+    guide: [
+      { id: "report-multi-guide", layer: "scroll", x: 6.8, y: 20.4, w: 86.4, h: 5.5 },
+      { id: "report-multi-guide", layer: "scroll", x: 48, y: 28, w: 40, h: 2.0 },
+      { id: "report-multi-guide", layer: "scroll", x: 6, y: 34, w: 44, h: 2 }
+    ]
+  },
+  reportSubject: {
+    src: "./assets/screens/morning-list-subject.png",
+    scrollHotspots: [
+      { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
+      { label: "查看特别提醒", x: 6.8, y: 20.4, w: 86.4, h: 5.5, target: "specialNotice" },
+      { label: "呼叫AI交易员制定计划", x: 48, y: 28, w: 40, h: 2.0, target: "aiTrader" },
+      { label: "重磅事件", x: 6, y: 34, w: 44, h: 2, target: "report" }
+    ],
+    fixedHotspots: [],
+    guide: null
   },
   account: {
     src: "./assets/screens/account.png",
     scrollHotspots: [
       { label: "关闭我的账户", x: 3, y: 4.6, w: 34, h: 12, target: "market" },
-      { label: "查看账户管家分析", x: 3, y: 35.2, w: 94, h: 7.5, target: "accountMng" }
+      { label: "查看账户管家分析", x: 4, y: 27.5, w: 31, h: 4, target: "accountMng" }
     ],
     fixedHotspots: [],
-    guide: null
+    guide: { id: "account-analysis-guide", layer: "scroll", x: 4, y: 27.5, w: 31, h: 4 }
   },
   accountMng: {
     src: "./assets/screens/account-mng.png",
     scrollHotspots: [
       { label: "点击上方关闭账户管家", x: 0, y: 0, w: 100, h: 12.5, target: "account" },
-      { label: "关闭账户管家", x: 89, y: 12.5, w: 11, h: 10, target: "account" }
+      { label: "关闭账户管家", x: 89, y: 12.5, w: 11, h: 10, target: "account" },
+      { label: "帮我分析下当前实时持仓", x: 3, y: 90.5, w: 56, h: 4, target: "accountMng2" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
+  accountMng2: {
+    src: "./assets/screens/account-mng-2.png",
+    scrollHotspots: [
+      { label: "关闭", x: 89, y: 0, w: 11, h: 6, target: "account" },
+      { label: "深度复盘重仓股北方稀土", x: 3, y: 92.2, w: 56, h: 2, target: "accountMng3" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
+  accountMng3: {
+    src: "./assets/screens/account-mng-3.png",
+    scrollHotspots: [
+      { label: "关闭", x: 89, y: 0, w: 11, h: 6, target: "account" }
     ],
     fixedHotspots: [],
     guide: null
@@ -201,7 +235,7 @@ const screens = {
   trans: {
     src: "./assets/screens/trans.png",
     scrollHotspots: [
-      { label: "打开AI交易员", x: 38, y: 4.5, w: 34, h: 8.5, target: "aiTrader2" }
+      { label: "打开AI交易员", x: 38, y: 4.5, w: 34, h: 16.5, target: "aiTrader2" }
     ],
     fixedHotspots: [],
     guide: { id: "trans-more-nav", layer: "fixed", x: 80, y: 0, w: 20, h: 100 }
@@ -209,7 +243,16 @@ const screens = {
   aiTrader2: {
     src: "./assets/screens/ai-trader-2.png",
     scrollHotspots: [
-      { label: "关闭", x: 0, y: 0, w: 100, h: 10, target: "trans" }
+      { label: "关闭", x: 0, y: 0, w: 100, h: 10, target: "trans" },
+      { label: "黄金ETF网格计划", x: 3, y: 65, w: 94, h: 12, target: "aiTrader3" }
+    ],
+    fixedHotspots: [],
+    guide: null
+  },
+  aiTrader3: {
+    src: "./assets/screens/ai-trader-3.png",
+    scrollHotspots: [
+      { label: "关闭", x: 0, y: 0, w: 100, h: 10, target: "aiTrader2" }
     ],
     fixedHotspots: [],
     guide: null
@@ -386,7 +429,7 @@ function renderHotspots(screen) {
 }
 
 function syncBottomBarVisibility() {
-  bottomBar.hidden = ["kyc", "customize", "configPage", "sidebar", "chat", "account", "accountMng", "specialNotice", "aiTrader", "aiTrader2"].includes(activeKey)
+  bottomBar.hidden = ["kyc", "customize", "configPage", "sidebar", "chat", "account", "accountMng", "accountMng2", "accountMng3", "specialNotice", "aiTrader", "aiTrader2", "aiTrader3"].includes(activeKey)
     || activeKey.startsWith("chatTask");
 }
 
@@ -418,13 +461,24 @@ function runScreenSlide(className) {
 function applyGuideBounds(x, y, w, h, handSide = "right") {
   const handOnLeft = handSide === "left";
 
-  guideLayer.classList.toggle("hand-left", handOnLeft);
-  guideLayer.style.setProperty("--guide-x", `${x}px`);
-  guideLayer.style.setProperty("--guide-y", `${y}px`);
-  guideLayer.style.setProperty("--guide-w", `${w}px`);
-  guideLayer.style.setProperty("--guide-h", `${h}px`);
-  guideLayer.style.setProperty("--hand-x", `${handOnLeft ? x - 54 : x + w - 10}px`);
-  guideLayer.style.setProperty("--hand-y", `${y + h - 6}px`);
+  const node = document.createElement("div");
+  node.className = `guide-item ${handOnLeft ? "hand-left" : ""}`;
+  node.style.setProperty("--guide-x", `${x}px`);
+  node.style.setProperty("--guide-y", `${y}px`);
+  node.style.setProperty("--guide-w", `${w}px`);
+  node.style.setProperty("--guide-h", `${h}px`);
+  node.style.setProperty("--hand-x", `${handOnLeft ? x - 54 : x + w - 10}px`);
+  node.style.setProperty("--hand-y", `${y + h - 6}px`);
+  node.innerHTML = `
+    <div class="guide-target"></div>
+    <div class="guide-copy"></div>
+    <div class="guide-hand">
+      <span class="finger"></span>
+      <span class="palm"></span>
+    </div>
+  `;
+  guideLayer.appendChild(node);
+  return node;
 }
 
 function prepareGuide(guideId) {
@@ -432,7 +486,7 @@ function prepareGuide(guideId) {
   const hidden = !guideId || dismissedGuideIds.has(guideId);
   guideLayer.hidden = hidden;
   if (hidden) {
-    guideCopy.textContent = "";
+    guideLayer.innerHTML = "";
   }
   return !hidden;
 }
@@ -443,43 +497,54 @@ function dismissActiveGuide() {
   activeGuideId = null;
   guideDismissed = true;
   guideLayer.hidden = true;
+  guideLayer.innerHTML = "";
 }
 
-function setGuide(guide, handSide = "right") {
-  if (!guide) {
+function setGuide(guideInput, handSide = "right") {
+  if (!guideInput || (Array.isArray(guideInput) && guideInput.length === 0)) {
     activeGuideId = null;
     guideLayer.hidden = true;
-    guideCopy.textContent = "";
+    guideLayer.innerHTML = "";
     return;
   }
-  if (!prepareGuide(guide.id)) return;
+  
+  const guides = Array.isArray(guideInput) ? guideInput : [guideInput];
+  const primaryGuideId = guides[0].id;
+  if (!prepareGuide(primaryGuideId)) return;
+  
+  guideLayer.innerHTML = "";
 
   const screenRect = document.querySelector("#phoneScreen").getBoundingClientRect();
   const bottomRect = bottomBar.getBoundingClientRect();
   const imageRect = image.getBoundingClientRect();
-  const basis = guide.layer === "fixed"
-    ? { left: bottomRect.left - screenRect.left, top: bottomRect.top - screenRect.top, width: bottomRect.width, height: bottomRect.height }
-    : guide.layer === "scroll"
-      ? { left: imageRect.left - screenRect.left, top: imageRect.top - screenRect.top, width: imageRect.width, height: imageRect.height }
-      : { left: 0, top: 0, width: screenRect.width, height: screenRect.height };
 
-  const x = basis.left + (guide.x / 100) * basis.width;
-  const y = basis.top + (guide.y / 100) * basis.height;
-  const w = (guide.w / 100) * basis.width;
-  const h = (guide.h / 100) * basis.height;
+  guides.forEach(guide => {
+    const basis = guide.layer === "fixed"
+      ? { left: bottomRect.left - screenRect.left, top: bottomRect.top - screenRect.top, width: bottomRect.width, height: bottomRect.height }
+      : guide.layer === "scroll"
+        ? { left: imageRect.left - screenRect.left, top: imageRect.top - screenRect.top, width: imageRect.width, height: imageRect.height }
+        : { left: 0, top: 0, width: screenRect.width, height: screenRect.height };
 
-  applyGuideBounds(x, y, w, h, handSide);
-  guideCopy.textContent = guide.copy || "";
+    const x = basis.left + (guide.x / 100) * basis.width;
+    const y = basis.top + (guide.y / 100) * basis.height;
+    const w = (guide.w / 100) * basis.width;
+    const h = (guide.h / 100) * basis.height;
+
+    const node = applyGuideBounds(x, y, w, h, handSide);
+    node.querySelector(".guide-copy").textContent = guide.copy || "";
+  });
 }
 
 function setGuideToElement(element, guideId, offsetY = 0, handSide = "right") {
   if (!element) {
     activeGuideId = null;
     guideLayer.hidden = true;
-    guideCopy.textContent = "";
+    guideLayer.innerHTML = "";
     return;
   }
   if (!prepareGuide(guideId)) return;
+  
+  guideLayer.innerHTML = "";
 
   const screenRect = document.querySelector("#phoneScreen").getBoundingClientRect();
   const targetRect = element.getBoundingClientRect();
@@ -489,7 +554,6 @@ function setGuideToElement(element, guideId, offsetY = 0, handSide = "right") {
   const h = targetRect.height;
 
   applyGuideBounds(x, y, w, h, handSide);
-  guideCopy.textContent = "";
 }
 
 function renderConfigModules() {
@@ -608,7 +672,7 @@ function setActiveScreenGuide(screen = screens[activeKey]) {
     return;
   }
   if (activeKey === "report") {
-    setGuideToElement(document.querySelector('.nav-item[data-nav="trans"]'), "report-trans-nav");
+    setGuide(screen?.guide);
     return;
   }
   if (activeKey === "trans") {
@@ -711,11 +775,11 @@ async function showScreen(key, nextGuideSelector = null) {
 function updateNavState(screenKey = activeKey, forceMore = false) {
   const nextActive = forceMore
     ? "more"
-    : screenKey === "trans" || screenKey === "aiTrader2"
+    : screenKey === "trans" || screenKey === "aiTrader2" || screenKey === "aiTrader3"
       ? "trans"
       : screenKey === "watchlist"
         ? "watchlist"
-      : screenKey === "report" || screenKey === "account" || screenKey === "accountMng" || screenKey === "specialNotice" || screenKey === "aiTrader"
+      : screenKey === "report" || screenKey === "reportSubject" || screenKey === "account" || screenKey === "accountMng" || screenKey === "accountMng2" || screenKey === "accountMng3" || screenKey === "specialNotice" || screenKey === "aiTrader"
         ? "watch"
         : screenKey === "chat" || screenKey.startsWith("chatTask") || screenKey === "sidebar"
           ? "chat"
@@ -1023,11 +1087,14 @@ chatTabs.addEventListener("scroll", () => {
 
 document.addEventListener("click", (event) => {
   if (guideLayer.hidden || !activeGuideId) return;
-  const targetRect = guideLayer.querySelector(".guide-target").getBoundingClientRect();
-  const clickedGuide = event.clientX >= targetRect.left
-    && event.clientX <= targetRect.right
-    && event.clientY >= targetRect.top
-    && event.clientY <= targetRect.bottom;
+  const targets = Array.from(guideLayer.querySelectorAll(".guide-target"));
+  const clickedGuide = targets.some(target => {
+    const targetRect = target.getBoundingClientRect();
+    return event.clientX >= targetRect.left
+      && event.clientX <= targetRect.right
+      && event.clientY >= targetRect.top
+      && event.clientY <= targetRect.bottom;
+  });
   if (clickedGuide) dismissActiveGuide();
 }, true);
 
