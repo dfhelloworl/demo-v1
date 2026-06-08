@@ -323,6 +323,7 @@ const moreModal = document.querySelector("#moreModal");
 const customizeOverlay = document.querySelector("#customizeOverlay");
 const customizeSaveButton = document.querySelector("#customizeSaveButton");
 const screenStage = document.querySelector("#screenStage");
+const sideDrawerScreen = document.querySelector("#sideDrawerScreen");
 const chatInteraction = document.querySelector("#chatInteraction");
 const topModeTabs = document.querySelector("#topModeTabs");
 const chatHome = document.querySelector("#chatHome");
@@ -368,6 +369,77 @@ let guideDismissed = false;
 let activeGuideId = null;
 const dismissedGuideIds = new Set();
 let selectedImages = [];
+const traderIntroChunks = [
+  '<div class="trader-script-title">👋 你好，我是你的 <b>AI交易员</b></div>',
+  '<p>以后和交易有关的事情，你可以直接 <b>@ 我</b>。</p>',
+  '<p>我可以帮你做四类交易相关的事情：</p>',
+  '<div class="trader-script-list"><section><b>🔎 第一，帮你找机会</b><span>短线机会、涨停机会、值得跟踪的股票，我可以帮你完成从选股、模拟买卖到复盘的全流程。</span></section></div>',
+  '<div class="trader-script-list"><section><b>🧾 第二，把交易想法落地</b><span>你只要说出买卖想法，我会整理成可执行方案，包括触发条件、价格、数量和风控方式。</span></section></div>',
+  '<div class="trader-script-list"><section><b>📊 第三，处理你的持仓</b><span>亏了帮你降成本、控风险；赚了帮你设计止盈、减仓或保护收益的方案。</span></section></div>',
+  '<div class="trader-script-list"><section><b>💰 第四，安排闲置资金</b><span>账户里暂时不用的资金，我可以帮你预约国债逆回购，让闲钱尽量不闲着。</span></section></div>',
+  '<div class="trader-script-examples"><b>你可以这样 @ 我：</b><span>@AI交易员，帮我看看今天有没有适合关注的机会</span><span>@AI交易员，我想买这只股票，帮我生成一个可执行方案</span><span>@AI交易员，这只持仓亏了，帮我看看怎么处理</span><span>@AI交易员，账户里的闲钱帮我安排一下逆回购</span></div>',
+  '<div class="trader-script-note">✅ 我会先理解你的目标，再把计划整理给你确认。<b>确认之前，我不会替你下单。</b></div>'
+];
+const traderFollowupChunks = [
+  '<div class="trader-script-title">对，直接 <b>@ 我</b> 就行。</div>',
+  '<p>你可以说得很简单，我会帮你补全交易计划里需要确认的部分，比如 <b>标的、方向、数量、价格、触发条件和风险控制</b>。</p>',
+  '<div class="trader-script-note">如果信息不够，我会先问你，<b>不会直接执行。</b></div>'
+];
+const traderScenarioPrompts = [
+  ["scenario2", "场景二：承接上次任务 + 今日特别提醒机会"],
+  ["scenario3", "场景三：涨停猎手建仓任务"]
+];
+const traderScenario2OpeningChunks = [
+  '<div class="trader-script-title">我先同步一下上次你交给我的 <b>任务进度</b>。</div>',
+  '<p>你之前让我跟进 <b>天承科技</b> 的持仓处理。</p>',
+  '<div class="trader-script-status"><b>目前分批减仓计划已经生效，我正在持续盯盘：</b><span>已锁定目标持仓：天承科技</span><span>分批减仓条件已生效</span><span>当前状态：等待第一个执行时机</span><span>触发后会按你确认的条件自动执行，并及时通知你</span></div>',
+  '<div class="trader-script-note">今天又出现了一个新的机会提醒。</div>'
+];
+const traderScenario2OpportunityChunks = [
+  '<div class="trader-script-title">我刚收到一张来自 <b>特别提醒</b> 的机会卡：</div>',
+  '<div class="trader-opportunity-card"><b>天承科技短线波动加大</b><span>已有一定浮盈，但继续冲高后的回落风险正在上升。</span></div>',
+  '<p>结合你当前持仓，我的判断是：现在不适合简单地“一把卖出”或者“完全不动”。</p>',
+  '<div class="trader-script-list"><section><b>如果一次性卖出</b><span>可能会过早离场。</span></section></div>',
+  '<div class="trader-script-list"><section><b>如果完全不处理</b><span>也可能让已有收益回吐。</span></section></div>',
+  '<div class="trader-script-note">更稳妥的方式是：继续沿用分批减仓思路，优先锁定一部分利润，同时保留后续上涨空间。</div>'
+];
+const traderScenario2AdviceChunks = [
+  '<div class="trader-script-title">我建议这样处理：</div>',
+  '<div class="trader-plan-card"><b>方案：分批减仓，逐步锁定利润</b><span><b>触发条件一：</b>如果当前盈利回落到 +10% 左右，先减仓一半，避免已有收益继续回吐。</span><span><b>触发条件二：</b>如果股价继续冲高，但从高点回落超过 3%，再减仓一半，趁强势回撤时锁定收益。</span></div>',
+  '<div class="trader-script-examples"><b>你可以选择：</b><span>1. 确认并交给我执行</span><span>2. 先看看模拟效果</span><span>3. 调整减仓条件</span></div>'
+];
+const traderScenario2ConfirmChunks = [
+  '<div class="trader-script-title">好的，计划已经确认。</div>',
+  '<p>接下来我会持续盯着 <b>天承科技</b> 的走势。</p>',
+  '<div class="trader-script-note">一旦满足你确认的条件，我会自动执行对应的减仓操作。你不用一直盯盘，执行结果我会及时通知你。</div>'
+];
+const traderScenario3ClarifyChunks = [
+  '<div class="trader-script-title">收到。</div>',
+  '<p>我会按 <b>“涨停猎手”</b> 的逻辑，先帮你判断这批股票是否适合建仓。</p>',
+  '<div class="trader-script-note">在制定计划前，我需要确认一下你的建仓要求。</div>',
+  '<div class="trader-plan-card"><b>你可以参考这个说法：</b><span>从涨停猎手结果里，选 1 到 2 只封板强、开板风险低的股票。</span><span>单只股票不超过账户资金的 10%。</span><span>如果次日低开后翻红再买入；如果高开过多就先不追。</span><span>止损控制在 -5%，盈利超过 +8% 后开始跟踪止盈。</span></div>',
+  '<div class="trader-script-note">你也可以只说一句：<b>“按稳妥一点的方式来。”</b> 我会默认用较低仓位和更严格的风控条件。</div>'
+];
+const traderScenario3RiskChunks = [
+  '<div class="trader-script-title">好的，我会按 <b>稳健建仓</b> 来处理。</div>',
+  '<p>我会重点看四件事：</p>',
+  '<div class="trader-script-list"><section><b>第一，封板强度</b><span>优先选择封单稳定、炸板次数少的股票。</span></section></div>',
+  '<div class="trader-script-list"><section><b>第二，开板风险</b><span>如果反复开板、尾盘封不住，我会降低优先级。</span></section></div>',
+  '<div class="trader-script-list"><section><b>第三，次日买点</b><span>不直接追高，优先等低开翻红或回踩确认。</span></section></div>',
+  '<div class="trader-script-list"><section><b>第四，仓位和止损</b><span>单只不超过 10% 仓位，默认止损控制在 -5% 附近。</span></section></div>'
+];
+const traderScenario3PlanChunks = [
+  '<div class="trader-script-title">我已经根据涨停猎手结果，整理出一个建仓计划：</div>',
+  '<div class="trader-plan-card"><b>建仓计划：稳健跟踪涨停猎手机会</b><span><b>标的：</b>涨停猎手候选股 A</span><span><b>买入条件：</b>次日低开后翻红，且量能没有明显衰减时，分批建仓。</span><span><b>仓位：</b>首笔不超过账户资金的 5%，确认走势后最多加到 10%。</span><span><b>风控：</b>如果买入后跌破 -5%，触发止损；如果盈利超过 +8%，开始进入跟踪止盈。</span><span><b>执行方式：</b>先模拟观察，满足条件后再提交确认。</span></div>',
+  '<div class="trader-script-examples"><b>你可以选择：</b><span>1. 先模拟观察</span><span>2. 确认建仓计划</span><span>3. 调整选股和仓位要求</span></div>'
+];
+const traderScenario3ConfirmChunks = [
+  '<div class="trader-script-title">好的，建仓计划已确认。</div>',
+  '<p>我会持续跟踪涨停猎手候选股的次日表现。</p>',
+  '<div class="trader-script-note">只有在满足你确认的买入条件后，我才会提醒你确认下单。</div>',
+  '<div class="trader-script-status"><b>暂停建仓条件</b><span>开盘直接高开过多</span><span>封板质量变差</span><span>风险信号增强</span><span>出现以上情况，我会暂停建仓并告诉你原因。</span></div>'
+];
+let traderStreamTimers = [];
 let pendingImages = [];
 let swipeStart = null;
 let suppressSwipeClick = false;
@@ -731,6 +803,8 @@ async function showScreen(key, nextGuideSelector = null) {
     if (!isChatHub) closeChatOverlays();
   }
   kycScreen.hidden = true;
+  if (sideDrawerScreen) sideDrawerScreen.hidden = key !== "sidebar";
+  if (screenStage) screenStage.hidden = key === "sidebar";
   moreMenu.hidden = true;
   moreModal.hidden = true;
   customizeOverlay.hidden = true;
@@ -1137,14 +1211,141 @@ function resetChatTabSelection() {
   scenarioSheet.setAttribute("aria-hidden", "true");
 }
 
-function appendBubble(role, text) {
+function appendBubble(role, text, extraClass = "") {
   const bubble = document.createElement("div");
-  bubble.className = `chat-bubble ${role}`;
+  bubble.className = ["chat-bubble", role, extraClass].filter(Boolean).join(" ");
   bubble.textContent = text;
   enterChatMode();
   chatStream.appendChild(bubble);
   chatStream.scrollTop = chatStream.scrollHeight;
   return bubble;
+}
+
+function appendTraderScriptMessage(role, content, { rich = false } = {}) {
+  if (role === "user") {
+    return appendBubble("user", content, "trader-script-user");
+  }
+
+  const row = document.createElement("div");
+  row.className = "trader-script-row";
+  row.innerHTML = `
+    <div class="trader-script-avatar" aria-label="AI交易员头像"></div>
+    <div class="chat-bubble assistant trader-script-bubble">${rich ? content : escapeHtml(content)}</div>
+  `;
+  enterChatMode();
+  chatStream.appendChild(row);
+  chatStream.scrollTop = chatStream.scrollHeight;
+  return row.querySelector(".trader-script-bubble");
+}
+
+function clearTraderStreamTimers() {
+  traderStreamTimers.forEach((timer) => clearTimeout(timer));
+  traderStreamTimers = [];
+}
+
+function scheduleTraderStep(callback, delay) {
+  const timer = setTimeout(() => {
+    traderStreamTimers = traderStreamTimers.filter((item) => item !== timer);
+    callback();
+  }, delay);
+  traderStreamTimers.push(timer);
+}
+
+function streamTraderChunks(chunks, onComplete) {
+  const bubble = appendTraderScriptMessage("assistant", "", { rich: true });
+  bubble.classList.add("is-streaming");
+  chunks.forEach((chunk, index) => {
+    scheduleTraderStep(() => {
+      bubble.insertAdjacentHTML("beforeend", chunk);
+      chatStream.scrollTop = chatStream.scrollHeight;
+      if (index === chunks.length - 1) {
+        bubble.classList.remove("is-streaming");
+        onComplete?.();
+      }
+    }, 180 + index * 260);
+  });
+}
+
+function appendTraderScenarioActions() {
+  const actions = document.createElement("div");
+  actions.className = "trader-scenario-actions";
+  actions.innerHTML = traderScenarioPrompts.map(([scenario, label]) => `
+    <button type="button" data-trader-scenario="${scenario}">${escapeHtml(label)}</button>
+  `).join("");
+  chatStream.appendChild(actions);
+  chatStream.scrollTop = chatStream.scrollHeight;
+}
+
+function prepareTraderScriptStream() {
+  clearTraderStreamTimers();
+  enterChatMode();
+  chatStream.innerHTML = "";
+  chatInteraction.classList.remove("task-panel-open");
+  scenarioSheet.classList.remove("show");
+  scenarioSheet.setAttribute("aria-hidden", "true");
+  plusPanel.classList.remove("show");
+  plusPanel.setAttribute("aria-hidden", "true");
+}
+
+function showTraderScriptConversation() {
+  prepareTraderScriptStream();
+  streamTraderChunks(traderIntroChunks, () => {
+    scheduleTraderStep(() => {
+      appendTraderScriptMessage("user", "那我以后有交易想法，直接 @ 你就行？");
+    }, 380);
+    scheduleTraderStep(() => {
+      streamTraderChunks(traderFollowupChunks, appendTraderScenarioActions);
+    }, 780);
+  });
+}
+
+function showTraderScenario2Conversation() {
+  prepareTraderScriptStream();
+  streamTraderChunks(traderScenario2OpeningChunks, () => {
+    scheduleTraderStep(() => {
+      streamTraderChunks(traderScenario2OpportunityChunks, () => {
+        scheduleTraderStep(() => {
+          appendTraderScriptMessage("user", "现在要怎么处理？");
+        }, 380);
+        scheduleTraderStep(() => {
+          streamTraderChunks(traderScenario2AdviceChunks, () => {
+            scheduleTraderStep(() => {
+              appendTraderScriptMessage("user", "确认并交给你执行。");
+            }, 380);
+            scheduleTraderStep(() => {
+              streamTraderChunks(traderScenario2ConfirmChunks);
+            }, 780);
+          });
+        }, 780);
+      });
+    }, 520);
+  });
+}
+
+function showTraderScenario3Conversation() {
+  prepareTraderScriptStream();
+  appendTraderScriptMessage("user", "@AI交易员，涨停猎手选出来的票，帮我看看能不能建仓。");
+  scheduleTraderStep(() => {
+    streamTraderChunks(traderScenario3ClarifyChunks, () => {
+      scheduleTraderStep(() => {
+        appendTraderScriptMessage("user", "按稳妥一点的方式来，单只别超过 10%。");
+      }, 380);
+      scheduleTraderStep(() => {
+        streamTraderChunks(traderScenario3RiskChunks, () => {
+          scheduleTraderStep(() => {
+            streamTraderChunks(traderScenario3PlanChunks, () => {
+              scheduleTraderStep(() => {
+                appendTraderScriptMessage("user", "确认建仓计划。");
+              }, 380);
+              scheduleTraderStep(() => {
+                streamTraderChunks(traderScenario3ConfirmChunks);
+              }, 780);
+            });
+          }, 520);
+        });
+      }, 780);
+    });
+  }, 420);
 }
 
 function streamReply(promptText) {
@@ -1375,18 +1576,160 @@ const scenarioConfigs = {
   }
 };
 
+const skillCenter = {
+  hot: [
+    {
+      rank: 1,
+      title: "市场主线识别",
+      desc: "判断最近一个月市场主线，并分析未来一个月是否可持续。",
+      stats: ["今日使用 12.8万次", "使用量 +32%"],
+      prompt: "帮我识别最近一个月的市场主线，说明主线逻辑、强势板块、核心标的和未来一个月是否可持续"
+    },
+    {
+      rank: 2,
+      title: "持仓个股分析",
+      desc: "对持仓个股进行多维分析，给出评分、风险点和操作建议。",
+      stats: ["8.6万人正在用", "复用率 41%"],
+      prompt: "帮我对持仓里的个股做多维分析，给出评分、风险点和操作建议"
+    },
+    {
+      rank: 3,
+      title: "财报分析",
+      desc: "分析公司财报，拆出收入、利润、现金流和投资逻辑。",
+      stats: ["本周收藏 8426 次", "财报季高频"],
+      prompt: "帮我分析[公司名称/股票名称]最新财报，拆解收入、利润、现金流、风险和投资逻辑"
+    },
+    {
+      rank: 4,
+      title: "事件催化日历",
+      desc: "按时间线梳理宏观、行业、个股关键催化事件。",
+      stats: ["近1小时升温", "讨论 +24%"],
+      prompt: "帮我整理未来一段时间的事件催化日历，按宏观、行业和个股层面标出关键节点和影响"
+    },
+    {
+      rank: 5,
+      title: "可比公司分析",
+      desc: "横向对比同类公司，快速看清估值、成长和竞争位置。",
+      stats: ["4.2万人使用", "研报用户常用"],
+      prompt: "帮我做[股票名称]的可比公司分析，对比估值、成长性、盈利质量和竞争优势"
+    },
+    {
+      rank: 6,
+      title: "基金持仓分析",
+      desc: "跟踪境内外机构调仓、调研和基金重仓变化。",
+      stats: ["机构线索榜 #2", "调用 +18%"],
+      prompt: "帮我分析[基金名称/基金代码]的持仓变化，跟踪机构调仓、调研行为和潜在影响"
+    },
+    {
+      rank: 7,
+      title: "信用账户诊断",
+      desc: "基于历史交易数据评估投资能力，并给出改进建议。",
+      stats: ["账户用户常用", "诊断完成 2.1万次"],
+      prompt: "根据我的账户历史交易数据，帮我评估投资能力、主要问题、改进建议和适合的产品"
+    }
+  ],
+  market: [
+    {
+      category: "投研分析",
+      items: [
+        ["市场主线识别", "识别市场主线、扩散方向和核心标的。", "帮我识别当前市场主线"],
+        ["可比公司分析", "对目标公司进行同业横向比较。", "帮我做[股票名称]的可比公司分析"],
+        ["财报分析", "拆解财报指标并形成投资逻辑。", "帮我分析[股票名称]最新财报"],
+        ["事件催化日历", "按时间线梳理关键催化事件。", "帮我整理未来一段时间的事件催化日历"]
+      ]
+    },
+    {
+      category: "账户诊断",
+      items: [
+        ["持仓个股分析", "对持仓个股打分并给出操作建议。", "帮我分析我的持仓个股"],
+        ["信用账户诊断", "评估交易能力并推荐改进方案。", "帮我诊断我的信用账户"],
+        ["流动性资产配置", "识别闲置资金并给出配置建议。", "帮我看看账户闲置资金怎么配置更合适"]
+      ]
+    },
+    {
+      category: "基金与机构",
+      items: [
+        ["基金持仓分析", "跟踪基金持仓、调仓和机构行为。", "帮我分析[基金名称/基金代码]的持仓变化"],
+        ["机构调研跟踪", "追踪机构调研动作和重点公司。", "帮我跟踪最近机构密集调研的公司"],
+        ["主题资金扩散", "观察主题资金从龙头向分支扩散。", "帮我分析[主题名称]的资金扩散路径"]
+      ]
+    }
+  ]
+};
+
+function renderSkillCenter(activeTab = "hot") {
+  const isHot = activeTab === "hot";
+  scenarioTitle.textContent = "技能";
+  scenarioDesc.textContent = "热门榜看全站使用热度，技能市场按场景浏览更多能力。";
+  scenarioList.innerHTML = `
+    <div class="skill-center">
+      <div class="skill-center-tabs" role="tablist" aria-label="技能分类">
+        <button class="${isHot ? "active" : ""}" type="button" data-skill-tab="hot">热门技能</button>
+        <button class="${!isHot ? "active" : ""}" type="button" data-skill-tab="market">技能市场</button>
+      </div>
+      ${isHot ? renderHotSkillRank() : renderSkillMarket()}
+    </div>
+  `;
+}
+
+function renderHotSkillRank() {
+  return `
+    <div class="skill-rank-list">
+      ${skillCenter.hot.map((item) => `
+        <article class="skill-rank-card rank-${item.rank}">
+          <div class="skill-rank-no">#${item.rank}</div>
+          <div class="skill-rank-main">
+            <h4>${escapeHtml(item.title)}</h4>
+            <div class="skill-rank-stats">
+              ${item.stats.map((stat) => `<span>${escapeHtml(stat)}</span>`).join("")}
+            </div>
+            <p>${escapeHtml(item.desc)}</p>
+          </div>
+          <button type="button" data-title="${escapeHtml(item.title)}" data-prompt="${escapeHtml(item.prompt)}">使用</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderSkillMarket() {
+  return `
+    <div class="skill-market-list">
+      ${skillCenter.market.map((group) => `
+        <section class="skill-market-group">
+          <strong>${escapeHtml(group.category)}</strong>
+          ${group.items.map(([title, desc, prompt]) => `
+            <article class="skill-market-item">
+              <div>
+                <h4>${escapeHtml(title)}</h4>
+                <p>${escapeHtml(desc)}</p>
+              </div>
+              <button type="button" data-title="${escapeHtml(title)}" data-prompt="${escapeHtml(prompt)}">使用</button>
+            </article>
+          `).join("")}
+        </section>
+      `).join("")}
+    </div>
+  `;
+}
+
 function openScenarioSheet(tabName) {
   const config = scenarioConfigs[tabName] || scenarioConfigs["技能"];
   chatInteraction.classList.add("chat-active");
-  scenarioTitle.textContent = tabName;
-  scenarioDesc.textContent = config.desc;
-  scenarioList.innerHTML = config.items.map(([title, desc, prompt]) => `
-    <article class="scenario-item">
-      <h4>${escapeHtml(title)}</h4>
-      <button type="button" data-title="${escapeHtml(title)}" data-prompt="${escapeHtml(prompt)}">使用</button>
-      <p>${escapeHtml(desc)}</p>
-    </article>
-  `).join("");
+  scenarioSheet.classList.toggle("skill-center-sheet", tabName === "技能");
+  if (tabName === "技能") {
+    renderSkillCenter("hot");
+  } else {
+    scenarioTitle.textContent = tabName;
+    scenarioDesc.textContent = config.desc;
+    scenarioList.innerHTML = config.items.map(([title, desc, prompt]) => `
+      <article class="scenario-item">
+        <h4>${escapeHtml(title)}</h4>
+        <button type="button" data-title="${escapeHtml(title)}" data-prompt="${escapeHtml(prompt)}">使用</button>
+        <p>${escapeHtml(desc)}</p>
+      </article>
+    `).join("");
+  }
   scenarioSheet.classList.add("show");
   scenarioSheet.setAttribute("aria-hidden", "false");
   plusPanel.classList.remove("show");
@@ -1411,8 +1754,17 @@ function fillPromptToInput(prompt, { preserveTabModule = false } = {}) {
   scenarioSheet.setAttribute("aria-hidden", "true");
 }
 
+function setTaskPanelView(view = "done") {
+  taskAssistantPanel.classList.toggle("is-view-create", view === "create");
+  taskAssistantPanel.querySelectorAll("[data-task-view]").forEach((button) => {
+    button.classList.toggle("selected", button.dataset.taskView === view);
+  });
+}
+
 chatCloseBtn.addEventListener("click", () => showScreen("report"));
 chatMenuBtn.addEventListener("click", () => showScreen("sidebar"));
+
+sideDrawerScreen?.querySelector(".side-drawer-backdrop")?.addEventListener("click", () => showScreen("chat"));
 
 topModeTabs.addEventListener("click", (event) => {
   const tab = event.target.closest(".top-mode-tab");
@@ -1468,12 +1820,31 @@ promptSuggest.addEventListener("click", (event) => {
 });
 
 chatHome.addEventListener("click", (event) => {
+  const trendBubble = event.target.closest("[data-trend]");
+  if (trendBubble) {
+    const trendRadar = trendBubble.closest("#trendRadar");
+    const trendKey = trendBubble.dataset.trend;
+    trendRadar.querySelectorAll(".trend-bubble").forEach((item) => {
+      item.classList.toggle("active", item === trendBubble);
+    });
+    trendRadar.querySelectorAll(".trend-panel").forEach((item) => {
+      item.classList.toggle("active", item.dataset.trendPanel === trendKey);
+    });
+    return;
+  }
+
   const action = event.target.closest("[data-prompt]");
   if (!action) return;
   fillPromptToInput(action.dataset.prompt || "");
 });
 
 taskAssistantPanel.addEventListener("click", (event) => {
+  const viewButton = event.target.closest("[data-task-view]");
+  if (viewButton) {
+    setTaskPanelView(viewButton.dataset.taskView || "done");
+    return;
+  }
+
   const action = event.target.closest("[data-prompt]");
   if (!action) return;
   fillPromptToInput(action.dataset.prompt || "", { preserveTabModule: true });
@@ -1513,11 +1884,12 @@ document.querySelectorAll(".chat-chip").forEach((chip) => {
     hidePreviousTabModule();
     if (chip.dataset.tab === "任务助手") {
       chatInteraction.classList.add("task-panel-open");
+      setTaskPanelView("done");
       return;
     }
     if (chip.dataset.tab === "AI交易员") {
       chatInteraction.classList.add("tab-ai-trader");
-      appendTraderCard();
+      showTraderScriptConversation();
       return;
     }
     chatInteraction.classList.remove("task-panel-open");
@@ -1541,7 +1913,20 @@ if (scenarioClose) {
   });
 }
 
+scenarioSheet.addEventListener("click", (event) => {
+  const skillTab = event.target.closest("[data-skill-tab]");
+  if (!skillTab) return;
+  event.preventDefault();
+  renderSkillCenter(skillTab.dataset.skillTab || "hot");
+}, true);
+
 scenarioList.addEventListener("click", (event) => {
+  const skillTab = event.target.closest("[data-skill-tab]");
+  if (skillTab) {
+    renderSkillCenter(skillTab.dataset.skillTab || "hot");
+    return;
+  }
+
   const button = event.target.closest("[data-prompt]");
   if (!button) return;
   if (button.dataset.title === "个股深度研究报告") {
@@ -1554,6 +1939,13 @@ scenarioList.addEventListener("click", (event) => {
 });
 
 chatStream.addEventListener("click", (event) => {
+  const traderScenario = event.target.closest("[data-trader-scenario]");
+  if (traderScenario) {
+    if (traderScenario.dataset.traderScenario === "scenario2") showTraderScenario2Conversation();
+    if (traderScenario.dataset.traderScenario === "scenario3") showTraderScenario3Conversation();
+    return;
+  }
+
   const traderAction = event.target.closest("[data-trader-action]");
   if (traderAction) {
     const prompt = traderAction.dataset.traderAction === "plan"

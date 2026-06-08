@@ -131,57 +131,212 @@
 
             <section class="chat-home" id="chatHome" aria-label="今日开始">
               <h1>今天想看什么？</h1>
-              <p class="chat-home-lead">可以直接输入问题，也可以从下面的高频场景开始。</p>
-              <article class="home-panel hot-targets">
-                <div class="home-panel-head"><strong>今日热议标的</strong><span>实时行情</span></div>
-                <button class="market-row" type="button" data-prompt="帮我分析宁德时代今天大涨的原因，以及新能源板块是否还能延续"><b>1. 宁德时代</b><em
-                    class="up">+6.2%</em><span>#新能源</span></button>
-                <button class="market-row" type="button" data-prompt="帮我分析英伟达上涨对A股AI芯片和算力链的影响"><b>2. 英伟达</b><em
-                    class="up">+4.1%</em><span>#AI芯片</span></button>
-                <button class="market-row" type="button" data-prompt="东方财富今天下跌，帮我判断券商板块是不是短线走弱"><b>3. 东方财富</b><em
-                    class="down">-1.8%</em><span>#券商</span></button>
-                <button class="home-more" type="button" data-prompt="查看更多今日热议标的，并按上涨原因、资金流和板块主线分类">查看更多 →</button>
-              </article>
-              <article class="home-panel creator-panel">
-                <div class="home-panel-head"><strong>财经达人都在关注</strong><span>观点摘要</span></div>
-                <button type="button"
-                  data-prompt="帮我总结财经达人今天都在关注什么，并提炼对A股的三条影响"><b>@趋势老张</b><span>今天重点关注AI算力回流和新能源反弹持续性。</span></button>
-                <button type="button"
-                  data-prompt="帮我分析今天A股三大看点，并给出适合关注的板块"><b>@盘面观察员</b><span>A股三大看点：资金回流、券商分歧、事件催化。</span></button>
-              </article>
-              <article class="home-panel skill-panel">
-                <div class="home-panel-head"><strong>大家都爱用的技能</strong><span>高频入口</span></div>
-                <div class="home-skill-grid">
-                  <button type="button" data-prompt="帮我做一份个股深度分析，包含基本面、技术面、资金面和风险点">个股深度分析</button>
-                  <button type="button" data-prompt="帮我根据当前市场主线生成一组可跟踪的选股策略">选股策略</button>
-                  <button type="button" data-prompt="帮我诊断当前持仓结构，指出主要风险和优化方向">持仓诊断</button>
-                  <button type="button" data-prompt="帮我做一个行业对比分析，找出估值和成长性更优的公司">行业对比</button>
+              <p class="chat-home-lead">看看全站正在热什么，点击气泡切换推荐。</p>
+              <article class="home-panel trend-radar" id="trendRadar">
+                <div class="home-panel-head"><strong>大家都在看</strong><span>UGC 实时热度</span></div>
+                <div class="trend-bubble-map" aria-label="热门推荐分类">
+                  <button class="trend-bubble bubble-large active" type="button" data-trend="targets">
+                    <strong>热议标的</strong><span>2.3万人在问</span>
+                  </button>
+                  <button class="trend-bubble bubble-mid" type="button" data-trend="creators">
+                    <strong>关注大V</strong><span>326次引用</span>
+                  </button>
+                  <button class="trend-bubble bubble-small" type="button" data-trend="skills">
+                    <strong>热门Skill</strong><span>12.8万次调用</span>
+                  </button>
+                  <button class="trend-bubble bubble-mid alt" type="button" data-trend="questions">
+                    <strong>热议问题</strong><span>3.1万人都在问</span>
+                  </button>
+                  <button class="trend-bubble bubble-small soft" type="button" data-trend="themes">
+                    <strong>发酵主题</strong><span>42只标的扩散</span>
+                  </button>
+                </div>
+
+                <div class="trend-panel active" data-trend-panel="targets">
+                  <div class="trend-items">
+                    <button type="button" data-prompt="京东方A今天为什么被反复提到？请结合资金、题材和风险分析">
+                      <b>京东方A</b><em>2.3万人在问</em><span>面板涨价、放量异动</span>
+                    </button>
+                    <button type="button" data-prompt="帮我分析寒武纪今天的资金流和AI芯片主线是否还能延续">
+                      <b>寒武纪</b><em>讨论量 +38%</em><span>AI芯片、人气回流</span>
+                    </button>
+                    <button type="button" data-prompt="机器人ETF今天热度升温，帮我找出核心驱动和相关龙头">
+                      <b>机器人ETF</b><em>近1小时升温</em><span>板块扩散、ETF放量</span>
+                    </button>
+                  </div>
+                  <div class="trend-questions">
+                    <button type="button" data-prompt="今天热议标的里，哪些是资金真实流入，哪些只是情绪炒作？">哪些是真资金，哪些是情绪？</button>
+                    <button type="button" data-prompt="帮我按热度、资金和风险筛选今天最值得跟踪的3只标的">筛出最值得跟踪的3只</button>
+                  </div>
+                </div>
+
+                <div class="trend-panel" data-trend-panel="creators">
+                  <div class="trend-items">
+                    <button type="button" data-prompt="总结@趋势猎手今天的核心观点，并判断适合短线还是中线参考">
+                      <b>@趋势猎手</b><em>今日被引用326次</em><span>短线情绪、主线轮动</span>
+                    </button>
+                    <button type="button" data-prompt="老赵看盘今天最关注哪些方向？帮我提炼成三个可验证观点">
+                      <b>@老赵看盘</b><em>1.8万人关注</em><span>盘面节奏、资金分歧</span>
+                    </button>
+                    <button type="button" data-prompt="量价笔记最近观点准确率怎么样？帮我看他今天提到的标的">
+                      <b>@量价笔记</b><em>观点被追问最多</em><span>量价关系、趋势确认</span>
+                    </button>
+                  </div>
+                  <div class="trend-questions">
+                    <button type="button" data-prompt="今天大V们观点最一致的方向是什么？有哪些明显分歧？">大V们今天共识是什么？</button>
+                    <button type="button" data-prompt="帮我找出今天被最多大V同时提到的标的和主题">哪些标的被大V扎堆提到？</button>
+                  </div>
+                </div>
+
+                <div class="trend-panel" data-trend-panel="skills">
+                  <div class="trend-items">
+                    <button type="button" data-prompt="用资金流追踪Skill分析我的自选股，找出今天资金异动最大的标的">
+                      <b>资金流追踪</b><em>今日调用12.8万次</em><span>主力流向、板块扩散</span>
+                    </button>
+                    <button type="button" data-prompt="用涨停复盘Skill复盘今天涨停股，拆出市场主线和高度板">
+                      <b>涨停复盘</b><em>4.6万人使用</em><span>情绪周期、题材强度</span>
+                    </button>
+                    <button type="button" data-prompt="用持仓诊断Skill检查我的账户风险，并给出优化顺序">
+                      <b>持仓诊断</b><em>自选股常用</em><span>仓位风险、集中度</span>
+                    </button>
+                  </div>
+                  <div class="trend-questions">
+                    <button type="button" data-prompt="现在最适合用哪个Skill分析我的自选股？请按场景推荐">我现在该用哪个Skill？</button>
+                    <button type="button" data-prompt="帮我组合三个热门Skill，生成一套今天的看盘流程">生成一套看盘Skill组合</button>
+                  </div>
+                </div>
+
+                <div class="trend-panel" data-trend-panel="questions">
+                  <div class="trend-items">
+                    <button type="button" data-prompt="今天为什么小票情绪突然变强？请结合成交量、题材和风险偏好解释">
+                      <b>小票情绪为什么变强？</b><em>3.1万人都在问</em><span>情绪修复、资金切换</span>
+                    </button>
+                    <button type="button" data-prompt="半导体今天还能追吗？帮我判断主线强度和买点风险">
+                      <b>半导体还能追吗？</b><em>连续3小时热议</em><span>AI硬件、国产替代</span>
+                    </button>
+                    <button type="button" data-prompt="资金为什么又回到AI硬件？帮我分析持续性和相关标的">
+                      <b>资金为什么回到AI硬件？</b><em>相关讨论1.2万条</em><span>算力链、端侧AI</span>
+                    </button>
+                  </div>
+                  <div class="trend-questions">
+                    <button type="button" data-prompt="把今天全站热议问题按短线、中线、避险三类整理给我">按投资风格整理热议问题</button>
+                    <button type="button" data-prompt="今天哪些问题的答案最容易影响明天开盘？">哪些问题会影响明天？</button>
+                  </div>
+                </div>
+
+                <div class="trend-panel" data-trend-panel="themes">
+                  <div class="trend-items">
+                    <button type="button" data-prompt="机器人主题今天强在哪里？请找出核心标的、扩散路径和风险点">
+                      <b>机器人</b><em>扩散到42只标的</em><span>产业催化、龙头异动</span>
+                    </button>
+                    <button type="button" data-prompt="AI端侧主题为什么升温？帮我区分硬件、应用和芯片方向">
+                      <b>AI端侧</b><em>7位大V正在聊</em><span>硬件升级、应用落地</span>
+                    </button>
+                    <button type="button" data-prompt="红利资产最近讨论变多，帮我判断是防御配置还是趋势机会">
+                      <b>红利资产</b><em>关联讨论2.4万条</em><span>防御配置、资金避险</span>
+                    </button>
+                  </div>
+                  <div class="trend-questions">
+                    <button type="button" data-prompt="今天正在发酵的主题里，哪些已经扩散，哪些还在启动？">哪些主题刚启动？</button>
+                    <button type="button" data-prompt="帮我把热门主题按产业逻辑、资金强度和风险排序">按逻辑和资金排序主题</button>
+                  </div>
                 </div>
               </article>
             </section>
 
             <section class="task-assistant-panel" id="taskAssistantPanel" aria-hidden="true">
-              <!-- <div class="task-panel-head"><button class="task-panel-back" id="taskPanelBack" type="button" aria-label="返回">‹</button><strong>任务助手</strong></div> -->
-              <div class="task-panel-tabs"><button type="button">盯盘任务</button><button type="button">定时任务</button><button
-                  class="selected" type="button">复合任务</button></div>
-              <div class="task-panel-subtabs"><button class="selected" type="button">创建任务</button><button
-                  type="button">今日完成 5</button><button type="button">进行中</button><button type="button">已结束</button>
-              </div>
-              <div class="compute-strip"><span>剩余算力:<b>2005</b></span><button type="button">300算力待领取 ›</button></div>
-              <div class="task-cost">每个任务消耗100算力</div>
-              <div class="task-panel-list">
-                <button class="task-panel-item" type="button"
-                  data-prompt="帮我创建一个T选股盯盘任务，发现打新机会时提醒我"><strong>做T选股盯盘</strong><span>发现打新机会，2只新股可预约</span><em>查持仓 ·
-                    做T选股 · 盯盘</em></button>
-                <button class="task-panel-item" type="button"
-                  data-prompt="帮我创建打板助手任务，持仓涨跌达条件时自动提醒"><strong>打板助手</strong><span>持仓涨跌达条件自动提醒</span><em>查持仓 · 盯盘 ·
-                    交易</em></button>
-                <button class="task-panel-item" type="button"
-                  data-prompt="帮我创建打新任务，跟踪新股申购和中签提醒"><strong>打新任务</strong><span>新股申购、中签缴款和风险提醒</span><em>打新 · 日历 ·
-                    提醒</em></button>
-                <button class="task-panel-item" type="button"
-                  data-prompt="帮我持续跟踪财经达人观点，并在观点变化时总结影响"><strong>跟踪财经达人</strong><span>持续跟踪观点变化并生成摘要</span><em>达人动态 · 摘要
-                    · 盯盘</em></button>
+              <div class="task-panel-card">
+                <header class="task-panel-hero">
+                  <h2>任务助手</h2>
+                  <div class="task-skill-pill">
+                    <span class="skill-flame">🔥</span>
+                    <span>AI涨乐skills</span>
+                    <b>一键安装</b>
+                  </div>
+                </header>
+                <nav class="task-panel-tabs" aria-label="任务类型">
+                  <button type="button">盯盘任务</button>
+                  <button type="button">定时任务</button>
+                  <button class="selected" type="button">复合任务</button>
+                </nav>
+                <nav class="task-panel-subtabs" aria-label="任务状态">
+                  <button class="task-create-tab" type="button" data-task-view="create">创建任务</button>
+                  <button class="selected" type="button" data-task-view="done">今日完成 <b>5</b></button>
+                  <button type="button">进行中</button>
+                  <button type="button">已暂停</button>
+                  <button type="button">已结束</button>
+                </nav>
+
+                <div class="task-create-view">
+                  <div class="compute-strip">
+                    <span>剩余算力: <b>2005</b><i>?</i></span>
+                    <button type="button">300算力待领取 ›</button>
+                  </div>
+                  <div class="task-cost">每个任务消耗100算力</div>
+                  <div class="task-panel-list">
+                    <button class="task-panel-item" type="button"
+                      data-prompt="帮我创建做T选股盯盘任务，发现打新机会时提醒我">
+                      <strong>做T选股盯盘</strong>
+                      <span>发现打新机会，2只新股可预约</span>
+                      <em>查持仓 · 做T选股 · 盯盘</em>
+                    </button>
+                    <button class="task-panel-item" type="button"
+                      data-prompt="帮我创建打板助手任务，持仓涨跌达条件时自动交易">
+                      <strong>打板助手</strong>
+                      <span>持仓涨跌达条件自动交易</span>
+                      <em>查持仓 · 盯盘 · 交易</em>
+                    </button>
+                    <button class="task-panel-item" type="button"
+                      data-prompt="帮我创建打新任务，跟踪新股申购和中签提醒">
+                      <strong>打新任务</strong>
+                      <span>持仓涨跌达条件自动交易</span>
+                      <em>查持仓 · 盯盘 · 交易</em>
+                    </button>
+                    <button class="task-panel-item" type="button"
+                      data-prompt="帮我持续跟踪财经达人观点，并在观点变化时总结影响">
+                      <strong>跟踪财经达人</strong>
+                      <span>持仓涨跌达条件自动交易</span>
+                      <em>查持仓 · 盯盘 · 交易</em>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="task-done-view">
+                  <div class="task-timeline">
+                    <article class="task-time-group">
+                      <time>06/03 10:30:00</time>
+                      <section class="task-done-card">
+                        <header>
+                          <h3>做T选股盯盘</h3>
+                          <span>进行中 <i></i></span>
+                        </header>
+                        <p>选做T机会股，盯T+0信号</p>
+                        <div class="task-record-head">
+                          <b>执行记录：3次</b>
+                          <button type="button">全部记录 ›</button>
+                        </div>
+                        <div class="task-record-card">
+                          <div class="record-tag"><i></i>任务触发</div>
+                          <small>01-22 20:39:00 更新</small>
+                          <strong>已按您的要求选出股票 <button type="button">详情</button></strong>
+                          <p>发现<b>8</b>只股票有做T机会</p>
+                          <p><b>6</b>只持仓股：启航新材、智联科技、启航新材、智联科技、凯美特气、凯美特气</p>
+                          <p><b>2</b>只非持仓股：海立股份、中化装备</p>
+                        </div>
+                      </section>
+                    </article>
+                    <article class="task-time-group compact">
+                      <time>06/03 16:30:00</time>
+                      <section class="task-done-card">
+                        <header>
+                          <h3>回测我自选股里15只消费股近3年的净值曲线，对比沪深300的超额收益，生成可视化对比图和PDF分析报告</h3>
+                          <span>进行中 <i></i></span>
+                        </header>
+                        <footer>任务分析中 <button type="button">查看详情 ›</button></footer>
+                      </section>
+                    </article>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -265,6 +420,12 @@
               <div>123　　　　　space　　　　　完成</div>
             </div>
           </div>
+          <section class="side-drawer-screen" id="sideDrawerScreen" aria-label="Yomi侧边栏" hidden>
+            <button class="side-drawer-backdrop" type="button" aria-label="返回对话"></button>
+            <div class="side-drawer-panel">
+              <img src="./assets/screens/yomi-sidebar.png" alt="Yomi侧边栏" draggable="false" />
+            </div>
+          </section>
           <div class="more-menu" id="moreMenu" hidden>
             <button class="more-menu-backdrop" type="button" aria-label="关闭更多菜单"></button>
             <section class="more-menu-sheet" aria-label="更多菜单">
