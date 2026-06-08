@@ -521,6 +521,7 @@ function setActiveScreenGuide(screen = screens[activeKey]) {
 }
 
 async function showScreen(key, nextGuideSelector = null) {
+  const previousKey = activeKey;
   if (key === "chat" && activeKey === "sidebar" && sidebarEnteredFromChat) {
     guideLayer.hidden = true;
     await runScreenSlide("is-sliding-out-to-left");
@@ -547,6 +548,9 @@ async function showScreen(key, nextGuideSelector = null) {
   const isChatTask = key.startsWith("chatTask");
   const isChatHub = isChat || isChatTask;
   if (chatInteraction) {
+    if (isChat && previousKey !== "chat" && previousKey !== "sidebar") {
+      resetChatTabSelection();
+    }
     chatInteraction.classList.toggle("show", isChatHub);
     chatInteraction.classList.toggle("task-assistant-mode", isChatTask);
     chatInteraction.setAttribute("aria-hidden", isChatHub ? "false" : "true");
@@ -772,7 +776,7 @@ function escapeHtml(value) {
 }
 
 function closeChatOverlays() {
-  chatInteraction.classList.remove("keyboard-open", "keyboard-mode", "chat-active", "task-panel-open");
+  chatInteraction.classList.remove("keyboard-open", "keyboard-mode", "chat-active", "task-panel-open", "tab-ai-trader");
   keyboardToggle.classList.remove("active");
   plusPanel.classList.remove("show");
   plusPanel.setAttribute("aria-hidden", "true");
@@ -788,6 +792,15 @@ function closeChatOverlays() {
 function enterChatMode() {
   chatStream.classList.add("show");
   chatInteraction.classList.add("chat-active");
+}
+
+function resetChatTabSelection() {
+  document.querySelectorAll(".chat-chip").forEach((item) => item.classList.remove("selected"));
+  chatInteraction.classList.remove("tab-ai-trader", "task-panel-open");
+  chatInteraction.classList.remove("chat-active");
+  chatStream.classList.remove("show");
+  scenarioSheet.classList.remove("show");
+  scenarioSheet.setAttribute("aria-hidden", "true");
 }
 
 function appendBubble(role, text) {
@@ -1046,7 +1059,7 @@ function openScenarioSheet(tabName) {
 }
 
 function hidePreviousTabModule() {
-  chatInteraction.classList.remove("chat-active", "task-panel-open");
+  chatInteraction.classList.remove("chat-active", "task-panel-open", "tab-ai-trader");
   chatStream.classList.remove("show");
   scenarioSheet.classList.remove("show");
   scenarioSheet.setAttribute("aria-hidden", "true");
@@ -1054,9 +1067,10 @@ function hidePreviousTabModule() {
   plusPanel.setAttribute("aria-hidden", "true");
 }
 
-function fillPromptToInput(prompt) {
+function fillPromptToInput(prompt, { preserveTabModule = false } = {}) {
   setKeyboardMode(true);
   chatInput.value = prompt;
+  if (preserveTabModule) return;
   enterChatMode();
   chatInteraction.classList.remove("task-panel-open");
   scenarioSheet.classList.remove("show");
@@ -1128,7 +1142,7 @@ chatHome.addEventListener("click", (event) => {
 taskAssistantPanel.addEventListener("click", (event) => {
   const action = event.target.closest("[data-prompt]");
   if (!action) return;
-  fillPromptToInput(action.dataset.prompt || "");
+  fillPromptToInput(action.dataset.prompt || "", { preserveTabModule: true });
 });
 
 chatInput.addEventListener("keydown", (event) => {
@@ -1168,6 +1182,7 @@ document.querySelectorAll(".chat-chip").forEach((chip) => {
       return;
     }
     if (chip.dataset.tab === "AI交易员") {
+      chatInteraction.classList.add("tab-ai-trader");
       appendTraderCard();
       return;
     }
@@ -1281,7 +1296,7 @@ function dismissKeyboardFromOutside(event) {
     ? event.target
     : event.target?.parentElement;
   const interactiveTarget = targetElement?.closest(
-    "textarea, input, .chat-input-bar, .plus-panel, .scenario-sheet, .task-edit-sheet, .super-run-card, .super-confirm-card"
+    "textarea, input, .chat-input-bar, .chat-tabs, .plus-panel, .scenario-sheet, .task-edit-sheet, .super-run-card, .super-confirm-card"
   );
   if (interactiveTarget) return;
   setKeyboardMode(false);
