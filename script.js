@@ -1289,6 +1289,10 @@ document.addEventListener("mousedown", dismissKeyboardFromOutside, true);
 document.addEventListener("click", dismissKeyboardFromOutside, true);
 scrollArea.addEventListener("pointerdown", dismissKeyboardFromOutside, true);
 scrollArea.addEventListener("click", dismissKeyboardFromOutside, true);
+chatHome.addEventListener("pointerdown", dismissKeyboardFromOutside, true);
+chatHome.addEventListener("click", dismissKeyboardFromOutside, true);
+chatStream.addEventListener("pointerdown", dismissKeyboardFromOutside, true);
+chatStream.addEventListener("click", dismissKeyboardFromOutside, true);
 
 function startSuperBacktestCase() {
   const promptText = "帮我回测我自选股里 15 只消费股近 3 年的净值曲线，对比沪深 300 的超额收益，生成可视化对比图和 PDF 分析报告";
