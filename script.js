@@ -327,6 +327,7 @@ const sideDrawerScreen = document.querySelector("#sideDrawerScreen");
 const chatInteraction = document.querySelector("#chatInteraction");
 const topModeTabs = document.querySelector("#topModeTabs");
 const chatHome = document.querySelector("#chatHome");
+const todayPanel = document.querySelector("#todayPanel");
 const taskAssistantPanel = document.querySelector("#taskAssistantPanel");
 const taskPanelBack = document.querySelector("#taskPanelBack");
 const chatStream = document.querySelector("#chatStream");
@@ -386,8 +387,7 @@ const traderFollowupChunks = [
   '<div class="trader-script-note">如果信息不够，我会先问你，<b>不会直接执行。</b></div>'
 ];
 const traderScenarioPrompts = [
-  ["scenario2", "场景二：承接上次任务 + 今日特别提醒机会"],
-  ["scenario3", "场景三：涨停猎手建仓任务"]
+  ["scenario2", "场景二：涨停猎手建仓任务"]
 ];
 const traderScenario2OpeningChunks = [
   '<div class="trader-script-title">我先同步一下上次你交给我的 <b>任务进度</b>。</div>',
@@ -826,6 +826,7 @@ async function showScreen(key, nextGuideSelector = null) {
       tab.classList.toggle("selected", tab.dataset.mode === (isChatTask ? "task" : "chat"));
     });
     if (!isChatHub) closeChatOverlays();
+    if (isChat && previousKey !== "chat") setTodayBarrageMode("expanded");
   }
   kycScreen.hidden = true;
   if (sideDrawerScreen) sideDrawerScreen.hidden = key !== "sidebar";
@@ -1226,9 +1227,14 @@ function closeChatOverlays() {
   syncSelectedThumbs();
 }
 
-function enterChatMode() {
+function enterChatMode({ keepChipSelection = false } = {}) {
   chatStream.classList.add("show");
   chatInteraction.classList.add("chat-active");
+  chatInteraction.classList.remove("task-panel-open");
+  scenarioSheet.classList.remove("show");
+  scenarioSheet.setAttribute("aria-hidden", "true");
+  if (!keepChipSelection) document.querySelectorAll(".chat-chip").forEach((item) => item.classList.remove("selected"));
+  setTodayBarrageMode("hidden");
 }
 
 function resetChatTabSelection() {
@@ -1307,7 +1313,7 @@ function appendTraderScenarioActions() {
 
 function prepareTraderScriptStream() {
   clearTraderStreamTimers();
-  enterChatMode();
+  enterChatMode({ keepChipSelection: true });
   chatStream.innerHTML = "";
   chatInteraction.classList.remove("task-panel-open");
   scenarioSheet.classList.remove("show");
@@ -1790,8 +1796,30 @@ function setTaskPanelView(view = "done") {
   });
 }
 
+function setTodayBarrageMode(mode) {
+  const hidden = mode === "hidden";
+  chatHome.classList.toggle("today-barrage-hidden", hidden);
+  todayPanel?.setAttribute("aria-hidden", hidden ? "true" : "false");
+  document.querySelectorAll(".chat-barrage-toggle").forEach((button) => {
+    button.setAttribute("aria-pressed", hidden ? "false" : "true");
+    button.setAttribute("aria-label", hidden ? "显示热议弹幕" : "隐藏热议弹幕");
+  });
+}
+
+function setTodayBarrageHidden(hidden) {
+  setTodayBarrageMode(hidden ? "hidden" : "expanded");
+}
+
+function toggleTodayBarrage() {
+  if (chatHome.classList.contains("today-barrage-hidden")) {
+    setTodayBarrageMode("expanded");
+    return;
+  }
+  setTodayBarrageMode("hidden");
+}
+
 chatCloseBtn.addEventListener("click", () => showScreen("report"));
-chatMenuBtn.addEventListener("click", () => showScreen("sidebar"));
+chatMenuBtn.addEventListener("click", toggleTodayBarrage);
 
 sideDrawerScreen?.querySelector(".side-drawer-backdrop")?.addEventListener("click", () => showScreen("chat"));
 
@@ -1849,19 +1877,6 @@ promptSuggest.addEventListener("click", (event) => {
 });
 
 chatHome.addEventListener("click", (event) => {
-  const trendBubble = event.target.closest("[data-trend]");
-  if (trendBubble) {
-    const trendRadar = trendBubble.closest("#trendRadar");
-    const trendKey = trendBubble.dataset.trend;
-    trendRadar.querySelectorAll(".trend-bubble").forEach((item) => {
-      item.classList.toggle("active", item === trendBubble);
-    });
-    trendRadar.querySelectorAll(".trend-panel").forEach((item) => {
-      item.classList.toggle("active", item.dataset.trendPanel === trendKey);
-    });
-    return;
-  }
-
   const action = event.target.closest("[data-prompt]");
   if (!action) return;
   fillPromptToInput(action.dataset.prompt || "");
@@ -1905,6 +1920,20 @@ document.querySelectorAll(".chat-chip").forEach((chip) => {
       guideDismissed = true;
       guideLayer.hidden = true;
     }
+    const tabName = chip.dataset.tab || "技能";
+    const isSameSkillSheet = chip.classList.contains("selected")
+      && scenarioSheet.classList.contains("show")
+      && !chatInteraction.classList.contains("task-panel-open")
+      && !chatInteraction.classList.contains("tab-ai-trader");
+    const isSameTaskPanel = tabName === "任务助手"
+      && chip.classList.contains("selected")
+      && chatInteraction.classList.contains("task-panel-open");
+    if (isSameSkillSheet || isSameTaskPanel) {
+      hidePreviousTabModule();
+      chip.classList.remove("selected");
+      chatInput.blur();
+      return;
+    }
     setKeyboardMode(false);
     closePlusPanel();
     chatInput.blur();
@@ -1922,7 +1951,7 @@ document.querySelectorAll(".chat-chip").forEach((chip) => {
       return;
     }
     chatInteraction.classList.remove("task-panel-open");
-    openScenarioSheet(chip.dataset.tab || "技能");
+    openScenarioSheet(tabName);
   });
 });
 
@@ -1970,8 +1999,7 @@ scenarioList.addEventListener("click", (event) => {
 chatStream.addEventListener("click", (event) => {
   const traderScenario = event.target.closest("[data-trader-scenario]");
   if (traderScenario) {
-    if (traderScenario.dataset.traderScenario === "scenario2") showTraderScenario2Conversation();
-    if (traderScenario.dataset.traderScenario === "scenario3") showTraderScenario3Conversation();
+    if (traderScenario.dataset.traderScenario === "scenario2") showTraderScenario3Conversation();
     return;
   }
 

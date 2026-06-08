@@ -2385,6 +2385,20 @@ body {
   display: none;
 }
 
+.chat-interaction.chat-active .chat-home:not(.today-barrage-hidden),
+.chat-interaction.task-panel-open .chat-home:not(.today-barrage-hidden),
+.chat-interaction.task-assistant-mode .chat-home:not(.today-barrage-hidden) {
+  display: block;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.chat-interaction.chat-active .chat-home:not(.today-barrage-hidden) > *:not(.today-barrage-title):not(.today-panel),
+.chat-interaction.task-panel-open .chat-home:not(.today-barrage-hidden) > *:not(.today-barrage-title):not(.today-panel),
+.chat-interaction.task-assistant-mode .chat-home:not(.today-barrage-hidden) > *:not(.today-barrage-title):not(.today-panel) {
+  display: none;
+}
+
 .chat-interaction.keyboard-open:not(.chat-active):not(.task-panel-open):not(.task-assistant-mode) .chat-home {
   display: grid;
   bottom: 356px;
@@ -2728,11 +2742,11 @@ body {
   bottom: 154px;
   gap: 10px;
   padding: 12px;
-  border: 1px solid rgba(220, 231, 249, 0.9);
+  border: none;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 12px 28px rgba(41, 67, 108, 0.08);
-  backdrop-filter: blur(16px);
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .chat-interaction.keyboard-open.tab-ai-trader .chat-stream {
@@ -2959,13 +2973,17 @@ body {
 
 .home-panel,
 .task-assistant-panel,
-.scenario-sheet,
-.chat-interaction.tab-ai-trader .chat-stream {
+.scenario-sheet {
   border: 1px solid var(--chat-line);
   border-radius: 12px;
   background: var(--chat-card);
   box-shadow: 0 4px 12px rgba(42, 71, 113, 0.06);
   backdrop-filter: none;
+}
+
+.chat-interaction.tab-ai-trader .chat-stream {
+  border: none;
+  background: transparent;
 }
 
 .home-panel {
@@ -3945,11 +3963,11 @@ body {
   bottom: 154px;
   gap: 10px;
   padding: 12px;
-  border: 1px solid rgba(220, 231, 249, 0.9);
+  border: none;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 12px 28px rgba(41, 67, 108, 0.08);
-  backdrop-filter: blur(16px);
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .chat-interaction.keyboard-open.tab-ai-trader .chat-stream {
@@ -4176,13 +4194,18 @@ body {
 
 .home-panel,
 .task-assistant-panel,
-.scenario-sheet,
-.chat-interaction.tab-ai-trader .chat-stream {
+.scenario-sheet {
   border: 1px solid var(--chat-line);
   border-radius: 12px;
   background: var(--chat-card);
   box-shadow: 0 4px 12px rgba(42, 71, 113, 0.06);
   backdrop-filter: none;
+}
+
+.chat-interaction.tab-ai-trader .chat-stream {
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 .home-panel {
@@ -4392,13 +4415,18 @@ body {
 
 .home-panel,
 .task-assistant-panel,
-.scenario-sheet,
-.chat-interaction.tab-ai-trader .chat-stream {
+.scenario-sheet {
   border: 1px solid var(--chat-line);
   border-radius: 12px;
   background: var(--chat-card);
   box-shadow: 0 4px 12px rgba(42, 71, 113, 0.06);
   backdrop-filter: none;
+}
+
+.chat-interaction.tab-ai-trader .chat-stream {
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 .home-panel {
@@ -5462,4 +5490,196 @@ body {
 .trader-order-text {
   border-color: #e2e9f3;
   border-radius: 8px;
+}
+
+
+/* V5.2 chat barrage overrides */
+.chat-barrage-toggle span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: #245fcf;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+  padding: 0;
+  letter-spacing: normal;
+}
+
+.chat-barrage-toggle[aria-pressed="false"] span {
+  color: #7a879c;
+}
+
+.chat-barrage-toggle[aria-pressed="false"] {
+  background: rgba(245, 248, 252, 0.86);
+}
+
+.chat-barrage-toggle {
+  padding: 0;
+}
+
+
+.today-barrage-title {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 2px;
+  color: #1d3358;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+
+.today-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2f7cff;
+  box-shadow: 0 0 0 5px rgba(47, 124, 255, 0.12);
+}
+
+.today-barrage-title strong {
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.today-barrage-title em {
+  color: #71809b;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.today-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 31px;
+  height: 128px;
+  display: grid;
+  gap: 8px;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.chat-home.today-barrage-hidden .today-barrage-title,
+.chat-home.today-barrage-hidden .today-panel {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+}
+
+.today-barrage-lane {
+  display: flex;
+  gap: 8px;
+  min-width: max-content;
+  pointer-events: auto;
+  animation: todayBarrageDrift 18s linear infinite;
+}
+
+.today-barrage-lane.lane-2 {
+  margin-left: 22px;
+  animation-duration: 22s;
+}
+
+.today-barrage-lane.lane-3 {
+  margin-left: 7px;
+  animation-duration: 20s;
+}
+
+.today-panel:hover .today-barrage-lane {
+  animation-play-state: paused;
+}
+
+.today-barrage-item {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid rgba(211, 224, 246, 0.74);
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.58);
+  color: #1f3358;
+  font-family: inherit;
+  box-shadow: 0 5px 14px rgba(42, 71, 113, 0.05);
+  backdrop-filter: blur(12px);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.today-barrage-item span {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.today-barrage-item i {
+  padding: 2px 5px;
+  border-radius: 99px;
+  background: #edf4ff;
+  color: #2d68d8;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.today-barrage-item em {
+  color: #6f7f9a;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.today-barrage-item[data-kind="stock"] i {
+  background: #fff0f3;
+  color: #d62d48;
+}
+
+.today-barrage-item[data-kind="skill"] i {
+  background: #edf4ff;
+  color: #2f6fff;
+}
+
+.today-barrage-item[data-kind="theme"] i {
+  background: #f1f8ef;
+  color: #26834a;
+}
+
+.today-barrage-item[data-kind="question"] i {
+  background: #fff7e9;
+  color: #c66a10;
+}
+
+.chat-interaction.chat-active:has(.chat-home:not(.today-barrage-hidden)) .chat-stream {
+  padding-top: 58px;
+}
+
+@keyframes todayBarrageDrift {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-34px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Skill sheet height tuning */
+.scenario-sheet.skill-center-sheet {
+  top: auto;
+  bottom: 142px;
+  height: 55.666%;
+  max-height: 66.666%;
+  overflow-y: auto;
 }
