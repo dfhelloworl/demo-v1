@@ -256,6 +256,7 @@ const navItems = {
 const demoVersion = "2.1";
 const assetVersion = `v${demoVersion}`;
 document.documentElement.dataset.demoVersion = demoVersion;
+const phoneScreen = document.querySelector("#phoneScreen");
 const image = document.querySelector("#screenImage");
 const kycScreen = document.querySelector("#kycScreen");
 const confirmCard = document.querySelector("#confirmCard");
@@ -317,6 +318,10 @@ let activeGuideId = null;
 const dismissedGuideIds = new Set();
 let selectedImages = [];
 let pendingImages = [];
+let swipeStart = null;
+let suppressSwipeClick = false;
+
+const swipeNavOrder = ["market", "watch", "chat", "trans"];
 
 const configModuleRects = [
   { label: "指数行情", x: 3.2, y: 9.7, w: 93.6, h: 32.8 },
@@ -798,6 +803,159 @@ document.querySelectorAll(".nav-item").forEach((item) => {
     showScreen(navItems[key].target);
   });
 });
+
+function canSwipeBetweenBottomTabs() {
+  return swipeNavOrder.includes(activeNav)
+    && !customizeOverlayActive
+    && moreMenu.hidden
+    && moreModal.hidden
+    && !modalGuideActive
+    && activeKey !== "kyc";
+}
+
+function getSwipeNavIndex() {
+  return swipeNavOrder.indexOf(activeNav);
+}
+
+function switchBottomTabBySwipe(deltaX) {
+  const currentIndex = getSwipeNavIndex();
+  if (currentIndex < 0) return;
+
+  const direction = deltaX < 0 ? 1 : -1;
+  const nextIndex = currentIndex + direction;
+  if (nextIndex < 0 || nextIndex >= swipeNavOrder.length) return;
+
+  const nextNav = swipeNavOrder[nextIndex];
+  closeMoreMenu();
+  showScreen(navItems[nextNav].target);
+  animateBottomTabSwitch(direction);
+}
+
+function animateBottomTabSwitch(direction) {
+  const className = direction > 0 ? "tab-swipe-left" : "tab-swipe-right";
+  phoneScreen.classList.remove("tab-swipe-left", "tab-swipe-right");
+  void phoneScreen.offsetWidth;
+  phoneScreen.classList.add(className);
+  window.setTimeout(() => {
+    phoneScreen.classList.remove(className);
+  }, 360);
+}
+
+function canStartSwipeFrom(target) {
+  return !target.closest("textarea, input, .more-menu, .more-modal, .customize-overlay");
+}
+
+function startSwipeGesture(x, y, id = "touch") {
+  if (!canSwipeBetweenBottomTabs()) return;
+
+  swipeStart = {
+    x,
+    y,
+    id,
+    horizontal: false
+  };
+}
+
+function triggerSwipeGesture(deltaX) {
+  suppressSwipeClick = true;
+  switchBottomTabBySwipe(deltaX);
+  window.setTimeout(() => {
+    suppressSwipeClick = false;
+  }, 180);
+}
+
+function updateSwipeGesture(x, y, id = "touch", preventDefault = null) {
+  if (!swipeStart || swipeStart.id !== id) return;
+  const deltaX = x - swipeStart.x;
+  const deltaY = y - swipeStart.y;
+
+  if (!swipeStart.horizontal && Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY) * 1.05) {
+    swipeStart.horizontal = true;
+  }
+
+  if (swipeStart.horizontal && preventDefault) {
+    preventDefault();
+  }
+
+  if (!canSwipeBetweenBottomTabs()) return;
+  if (Math.abs(deltaX) < 34 || Math.abs(deltaX) < Math.abs(deltaY) * 1.05) return;
+
+  swipeStart = null;
+  triggerSwipeGesture(deltaX);
+}
+
+function finishSwipeGesture(x, y, id = "touch") {
+  if (!swipeStart || swipeStart.id !== id) return;
+  const deltaX = x - swipeStart.x;
+  const deltaY = y - swipeStart.y;
+  const horizontal = swipeStart.horizontal;
+  swipeStart = null;
+
+  if (!canSwipeBetweenBottomTabs()) return;
+  if (!horizontal && (Math.abs(deltaX) < 34 || Math.abs(deltaX) < Math.abs(deltaY) * 1.05)) return;
+
+  triggerSwipeGesture(deltaX);
+}
+
+phoneScreen.addEventListener("pointerdown", (event) => {
+  if (!canStartSwipeFrom(event.target)) return;
+  startSwipeGesture(event.clientX, event.clientY, event.pointerId);
+});
+
+phoneScreen.addEventListener("pointermove", (event) => {
+  updateSwipeGesture(event.clientX, event.clientY, event.pointerId);
+});
+
+phoneScreen.addEventListener("pointerup", (event) => {
+  finishSwipeGesture(event.clientX, event.clientY, event.pointerId);
+});
+
+phoneScreen.addEventListener("pointercancel", (event) => {
+  if (swipeStart && event.pointerId === swipeStart.id) {
+    swipeStart = null;
+  }
+});
+
+phoneScreen.addEventListener("touchstart", (event) => {
+  if (event.touches.length !== 1 || !canStartSwipeFrom(event.target)) return;
+  const touch = event.touches[0];
+  startSwipeGesture(touch.clientX, touch.clientY);
+}, { passive: true });
+
+phoneScreen.addEventListener("touchmove", (event) => {
+  if (event.touches.length !== 1) return;
+  const touch = event.touches[0];
+  updateSwipeGesture(touch.clientX, touch.clientY, "touch", () => event.preventDefault());
+}, { passive: false });
+
+phoneScreen.addEventListener("touchend", (event) => {
+  if (event.changedTouches.length < 1) return;
+  const touch = event.changedTouches[0];
+  finishSwipeGesture(touch.clientX, touch.clientY);
+}, { passive: true });
+
+phoneScreen.addEventListener("touchcancel", () => {
+  swipeStart = null;
+}, { passive: true });
+
+phoneScreen.addEventListener("mousedown", (event) => {
+  if (!canStartSwipeFrom(event.target)) return;
+  startSwipeGesture(event.clientX, event.clientY, "mouse");
+});
+
+phoneScreen.addEventListener("mousemove", (event) => {
+  updateSwipeGesture(event.clientX, event.clientY, "mouse");
+});
+
+phoneScreen.addEventListener("mouseup", (event) => {
+  finishSwipeGesture(event.clientX, event.clientY, "mouse");
+});
+
+document.addEventListener("click", (event) => {
+  if (!suppressSwipeClick) return;
+  event.preventDefault();
+  event.stopPropagation();
+}, true);
 
 function closeMoreModal(nextGuideNav = null) {
   modalGuideActive = false;

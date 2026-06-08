@@ -102,6 +102,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  touch-action: pan-y pinch-zoom;
   border-radius: 50px;
   background: #f3f6fb;
   box-shadow:
@@ -547,6 +548,16 @@ body {
   animation: screenSlideOutToLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+.screen.tab-swipe-left .screen-stage,
+.screen.tab-swipe-left .chat-interaction.show {
+  animation: bottomTabInFromRight 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.screen.tab-swipe-right .screen-stage,
+.screen.tab-swipe-right .chat-interaction.show {
+  animation: bottomTabInFromLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @keyframes screenSlideInFromLeft {
   from {
     transform: translateX(-100%);
@@ -564,6 +575,30 @@ body {
 
   to {
     transform: translateX(-100%);
+  }
+}
+
+@keyframes bottomTabInFromRight {
+  from {
+    opacity: 0.84;
+    transform: translateX(34%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bottomTabInFromLeft {
+  from {
+    opacity: 0.84;
+    transform: translateX(-34%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
