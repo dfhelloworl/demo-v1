@@ -268,6 +268,8 @@ const guideLayer = document.querySelector("#guideLayer");
 const guideCopy = document.querySelector("#guideCopy");
 const moreMenu = document.querySelector("#moreMenu");
 const moreModal = document.querySelector("#moreModal");
+const customizeOverlay = document.querySelector("#customizeOverlay");
+const customizeSaveButton = document.querySelector("#customizeSaveButton");
 const screenStage = document.querySelector("#screenStage");
 const chatInteraction = document.querySelector("#chatInteraction");
 const topModeTabs = document.querySelector("#topModeTabs");
@@ -306,6 +308,7 @@ let activeNav = "market";
 let accountReturnKey = "report";
 let moreMenuActive = false;
 let modalGuideActive = false;
+let customizeOverlayActive = false;
 let sidebarEnteredFromChat = false;
 let followupGuideNav = null;
 let followupGuideSelector = null;
@@ -513,6 +516,27 @@ function setMoreModalGuide() {
   setGuideToElement(moreModal.querySelector(".more-close-right"), "more-close-right", 0, "left");
 }
 
+function openCustomizeOverlay() {
+  customizeOverlayActive = true;
+  moreMenuActive = false;
+  modalGuideActive = false;
+  followupGuideNav = null;
+  followupGuideSelector = null;
+  guideDismissed = false;
+  moreMenu.hidden = true;
+  moreModal.hidden = true;
+  guideLayer.hidden = true;
+  confirmCard.hidden = true;
+  customizeOverlay.hidden = false;
+  customizeOverlay.querySelector(".customize-long-scroll")?.scrollTo({ top: 0, behavior: "auto" });
+}
+
+function closeCustomizeOverlay() {
+  customizeOverlayActive = false;
+  customizeOverlay.hidden = true;
+  showScreen("market");
+}
+
 function setKycGuide() {
   setGuideToElement(kycScreen.querySelector(".kyc-card.kyc-short"), "kyc-short");
 }
@@ -583,6 +607,11 @@ function setActiveScreenGuide(screen = screens[activeKey]) {
 }
 
 async function showScreen(key, nextGuideSelector = null) {
+  if (key === "customize") {
+    openCustomizeOverlay();
+    return;
+  }
+
   const previousKey = activeKey;
   if (key === "chat" && activeKey === "sidebar" && sidebarEnteredFromChat) {
     guideLayer.hidden = true;
@@ -624,6 +653,8 @@ async function showScreen(key, nextGuideSelector = null) {
   kycScreen.hidden = true;
   moreMenu.hidden = true;
   moreModal.hidden = true;
+  customizeOverlay.hidden = true;
+  customizeOverlayActive = false;
   confirmCard.hidden = !screen.confirm;
 
   const revealScreen = () => {
@@ -695,6 +726,8 @@ function showKyc() {
   moreMenu.hidden = true;
   moreMenuActive = false;
   moreModal.hidden = true;
+  customizeOverlay.hidden = true;
+  customizeOverlayActive = false;
   requestAnimationFrame(setKycGuide);
 }
 
@@ -787,8 +820,10 @@ moreMenu.querySelector(".more-menu-custom-nav").addEventListener("click", () => 
 moreModal.querySelector(".more-backdrop").addEventListener("click", () => closeMoreModal());
 moreModal.querySelector(".more-close-left").addEventListener("click", () => closeMoreModal());
 moreModal.querySelector(".more-close-right").addEventListener("click", () => closeMoreModal("chat"));
+customizeSaveButton.addEventListener("click", () => closeCustomizeOverlay());
 
 window.addEventListener("resize", () => {
+  if (customizeOverlayActive) return;
   syncHotspotLayerHeight();
   if (modalGuideActive) {
     setMoreModalGuide();
@@ -801,6 +836,7 @@ window.addEventListener("resize", () => {
   setActiveScreenGuide();
 });
 scrollArea.addEventListener("scroll", () => {
+  if (customizeOverlayActive) return;
   syncChatTabsScrollPosition();
   if (modalGuideActive) {
     setMoreModalGuide();
@@ -1262,10 +1298,12 @@ if (taskPanelBack) {
   });
 }
 
-scenarioClose.addEventListener("click", () => {
-  scenarioSheet.classList.remove("show");
-  scenarioSheet.setAttribute("aria-hidden", "true");
-});
+if (scenarioClose) {
+  scenarioClose.addEventListener("click", () => {
+    scenarioSheet.classList.remove("show");
+    scenarioSheet.setAttribute("aria-hidden", "true");
+  });
+}
 
 scenarioList.addEventListener("click", (event) => {
   const button = event.target.closest("[data-prompt]");

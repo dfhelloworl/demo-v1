@@ -72,6 +72,18 @@
               </div>
             </div>
           </div>
+          <div class="customize-overlay" id="customizeOverlay" hidden>
+            <div class="customize-mask" aria-hidden="true"></div>
+            <section class="customize-panel" aria-label="组件库">
+              <div class="customize-long-scroll">
+                <img src="./assets/screens/component-library-long.png" alt="组件库" draggable="false" />
+              </div>
+              <div class="customize-save-bar">
+                <img src="./assets/images/component-save-confirm.png" alt="保存确认" draggable="false" />
+                <button class="customize-save-hit" id="customizeSaveButton" type="button" aria-label="保存"></button>
+              </div>
+            </section>
+          </div>
           <div class="bottom-bar" id="bottomBar">
             <button class="nav-item" type="button" data-nav="market" aria-label="大盘">
               <img data-role="icon" alt="" draggable="false" />
@@ -270,56 +282,135 @@
               </header>
               <div class="more-menu-grid">
                 <button class="more-menu-item" type="button">
-                  <span class="more-menu-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <rect x="4" y="6" width="16" height="12" rx="2" />
-                      <path d="M8 10h8M8 14h5" />
-                    </svg>
-                  </span>
-                  <span>账户</span>
+                  <span class="more-menu-icon tone-trend" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"/><path d="M5 14l4-4 3 3 6-7"/><path d="M16 6h2v2"/></svg></span>
+                  <span>走势顶底</span>
                 </button>
                 <button class="more-menu-item" type="button">
-                  <span class="more-menu-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <rect x="5" y="8" width="14" height="10" rx="2" />
-                      <circle cx="12" cy="5" r="2" />
-                      <path d="M9 13h6" />
-                    </svg>
-                  </span>
-                  <span>AI交易员</span>
+                  <span class="more-menu-icon tone-bill" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v18l-2-1-2 1-2-1-2 1-2-1V3z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h4"/></svg></span>
+                  <span>账单</span>
                 </button>
                 <button class="more-menu-item" type="button">
-                  <span class="more-menu-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <rect x="5" y="5" width="14" height="14" rx="2" />
-                      <path d="M9 12l2 2 4-4" />
-                    </svg>
-                  </span>
-                  <span>任务助手</span>
+                  <span class="more-menu-icon tone-etf" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8 9h8"/><path d="M8 13h8"/><path d="M10 17h4"/></svg></span>
+                  <span>ETF专区</span>
                 </button>
                 <button class="more-menu-item" type="button">
-                  <span class="more-menu-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <path d="M12 4a5 5 0 0 1 5 5v1h1a2 2 0 0 1 2 2v6H4v-6a2 2 0 0 1 2-2h1V9a5 5 0 0 1 5-5z" />
-                    </svg>
-                  </span>
-                  <span>特别提醒</span>
+                  <span class="more-menu-icon tone-hot" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 14a4 4 0 1 0 8 0c0-3-3-5-3-9-3 2-5 5-5 9z"/><path d="M10 16h4"/></svg></span>
+                  <span>涨乐金股</span>
                 </button>
                 <button class="more-menu-item" type="button">
-                  <span class="more-menu-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <path d="M4 12l16-7-7 16-2-7-7-2z" />
-                    </svg>
-                  </span>
-                  <span>我的出招</span>
+                  <span class="more-menu-icon tone-live" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M10 10l5 2-5 2v-4z"/></svg></span>
+                  <span>直播广场</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-map" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l-5 2V6l5-2 6 2 5-2v14l-5 2-6-2z"/><path d="M9 4v14"/><path d="M15 6v14"/></svg></span>
+                  <span>智能图谱</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-joy" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l1 9a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3l1-9z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span>
+                  <span>我的咕咚乐</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-rank" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V9"/><path d="M12 20V4"/><path d="M19 20v-7"/><path d="M3 20h18"/></svg></span>
+                  <span>龙虎榜</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-chip" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M9 10h6"/><path d="M9 14h4"/><path d="M12 5V3M12 21v-2M5 12H3M21 12h-2"/></svg></span>
+                  <span>筹码分布</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-quick" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6l1-7z"/></svg></span>
+                  <span>快速选股</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-test" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v5l-5 9a3 3 0 0 0 3 4h8a3 3 0 0 0 3-4l-5-9V3"/><path d="M8 16h8"/></svg></span>
+                  <span>测个股</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-radar" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 12l5-5"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg></span>
+                  <span>形态雷达</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-save" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16H6z"/><path d="M9 4v5h6V4"/><path d="M9 16h6"/></svg></span>
+                  <span>省心投</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-star" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg></span>
+                  <span>省心选</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-mock" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18V6h12v12H6z"/><path d="M9 15l2-3 2 2 2-5"/><path d="M8 21h8"/></svg></span>
+                  <span>模拟炒股</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-calendar" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M9 15h6"/></svg></span>
+                  <span>财富日历</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-build" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18h16"/><path d="M6 14l4-4 3 3 5-7"/><path d="M7 18v-4M12 18v-5M17 18v-8"/></svg></span>
+                  <span>主力建仓</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-nine" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M10 8h3a3 3 0 0 1 0 6h-3"/><path d="M13 14l-3 3"/></svg></span>
+                  <span>神奇九转</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-research" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z"/><path d="M14 4v4h4"/><path d="M9 13h6"/><path d="M9 17h4"/></svg></span>
+                  <span>研究资讯</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-code" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 9l-4 3 4 3"/><path d="M16 9l4 3-4 3"/><path d="M14 5l-4 14"/></svg></span>
+                  <span>主力密码</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-cash" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="7" width="16" height="10" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M7 12h.01M17 12h.01"/></svg></span>
+                  <span>底部掘金</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-book" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/><path d="M8 4v13a3 3 0 0 0 3 3"/></svg></span>
+                  <span>涨乐研究</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-industry" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"/><path d="M6 19V9l5 3V9l5 3V7h3v12"/><path d="M8 15h1M12 15h1M16 15h1"/></svg></span>
+                  <span>行业透视</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-fund" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9"/><path d="M12 19V5"/><path d="M19 19v-7"/><path d="M4 19h16"/><path d="M9 5h6"/></svg></span>
+                  <span>基金排行</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-bank" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10l8-5 8 5"/><path d="M6 10v8M10 10v8M14 10v8M18 10v8"/><path d="M4 18h16"/></svg></span>
+                  <span>三方存管银行公示</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-etf2" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 3 7-8"/><path d="M15 7h5v5"/><path d="M5 20h14"/></svg></span>
+                  <span>ETF超级资金</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-global" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 12h16"/><path d="M12 4a12 12 0 0 1 0 16"/><path d="M12 4a12 12 0 0 0 0 16"/></svg></span>
+                  <span>跨境理财通</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-minute" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"/><path d="M5 15c3-7 5 4 8-2 2-4 3 1 6-5"/><path d="M16 8h3v3"/></svg></span>
+                  <span>分时顶底</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-portfolio" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12v12H6z"/><path d="M9 7V5h6v2"/><path d="M9 15l2-2 2 1 3-4"/></svg></span>
+                  <span>股票组合</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-secret" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-5"/></svg></span>
+                  <span>涨停揭秘</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-hotspot" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span>
+                  <span>热点掘金</span>
+                </button>
+                <button class="more-menu-item" type="button">
+                  <span class="more-menu-icon tone-t0" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M9 17h6"/><path d="M12 10v4"/></svg></span>
+                  <span>T+0ETF</span>
                 </button>
                 <button class="more-menu-item more-menu-custom-nav" type="button" aria-label="自定义导航">
-                  <span class="more-menu-icon more-menu-icon-add" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                      <circle cx="12" cy="12" r="8" />
-                      <path d="M12 9v6M9 12h6" />
-                    </svg>
-                  </span>
+                  <span class="more-menu-icon more-menu-icon-add" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v10"/><path d="M7 12h10"/></svg></span>
                   <span>自定义导航</span>
                 </button>
               </div>
