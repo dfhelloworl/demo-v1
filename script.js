@@ -186,7 +186,7 @@ const screens = {
     guide: { id: "sidebar-return-chat", layer: "scroll", x: 82, y: 5, w: 18, h: 88 }
   },
   gridParams: {
-    src: "./assets/screens/grid-params-chat-no-tabs.png",
+    src: "./assets/screens/grid-params-chat.png",
     scrollHotspots: [
       { label: "返回侧边栏", x: 3.5, y: 6, w: 8, h: 6, target: "sidebar" },
       { label: "继续运行", x: 10.5, y: 70.5, w: 77, h: 4.2, target: "gridParamsRunning" }
@@ -443,6 +443,8 @@ let traderStreamTimers = [];
 let pendingImages = [];
 let swipeStart = null;
 let suppressSwipeClick = false;
+let bottomTabSwipeAnimating = false;
+let guideRefreshTimer = null;
 
 const swipeNavOrder = ["market", "watch", "chat", "trans"];
 
@@ -572,11 +574,30 @@ function dismissActiveGuide() {
   guideLayer.innerHTML = "";
 }
 
+function hideGuideLayer() {
+  guideLayer.hidden = true;
+  guideLayer.innerHTML = "";
+}
+
+function scheduleStableGuideRefresh(delay = 420) {
+  window.clearTimeout(guideRefreshTimer);
+  hideGuideLayer();
+  guideRefreshTimer = window.setTimeout(() => {
+    guideRefreshTimer = null;
+    if (bottomTabSwipeAnimating) {
+      scheduleStableGuideRefresh(120);
+      return;
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setActiveScreenGuide());
+    });
+  }, delay);
+}
+
 function setGuide(guideInput, handSide = "right") {
   if (!guideInput || (Array.isArray(guideInput) && guideInput.length === 0)) {
     activeGuideId = null;
-    guideLayer.hidden = true;
-    guideLayer.innerHTML = "";
+    hideGuideLayer();
     return;
   }
   
@@ -716,6 +737,10 @@ function setFollowupGuideToElement(selector) {
 }
 
 function setActiveScreenGuide(screen = screens[activeKey]) {
+  if (bottomTabSwipeAnimating) {
+    scheduleStableGuideRefresh();
+    return;
+  }
   if (guideDismissed) {
     guideLayer.hidden = true;
     return;
@@ -982,11 +1007,15 @@ function switchBottomTabBySwipe(deltaX) {
 
 function animateBottomTabSwitch(direction) {
   const className = direction > 0 ? "tab-swipe-left" : "tab-swipe-right";
+  bottomTabSwipeAnimating = true;
+  scheduleStableGuideRefresh();
   phoneScreen.classList.remove("tab-swipe-left", "tab-swipe-right");
   void phoneScreen.offsetWidth;
   phoneScreen.classList.add(className);
   window.setTimeout(() => {
     phoneScreen.classList.remove(className);
+    bottomTabSwipeAnimating = false;
+    scheduleStableGuideRefresh(40);
   }, 360);
 }
 

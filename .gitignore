@@ -1,1 +1,5 @@
 node_modules/
+.DS_Store
+release/
+ai-zhangle-clean-demo-view.zip
+.DS_Store
