@@ -61,24 +61,34 @@ const screens = {
     src: "./assets/screens/morning-list.png",
     scrollHotspots: [
       { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
-      { label: "查看特别提醒", x: 6.8, y: 20.4, w: 86.4, h: 5.5, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 48, y: 28, w: 40, h: 2.0, target: "aiTrader" },
-      { label: "热点主题", x: 28, y: 34, w: 44, h: 2, target: "reportSubject" }
+      { label: "查看特别提醒", x: 6.8, y: 28.4, w: 40.4, h: 7.5, target: "specialNotice" },
+      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "aiTrader" },
+      { label: "查看工业富联投资机会分析", x: 7, y: 70, w: 86, h: 4.5, target: "morningListChat" },
+      { label: "热点主题",x: 10, y: 53, w: 85, h: 3.5, target: "reportSubject" }
     ],
     fixedHotspots: [],
     guide: [
-      { id: "report-multi-guide", layer: "scroll", x: 6.8, y: 20.4, w: 86.4, h: 5.5 },
-      { id: "report-multi-guide", layer: "scroll", x: 48, y: 28, w: 40, h: 2.0 },
-      { id: "report-multi-guide", layer: "scroll", x: 6, y: 34, w: 44, h: 2 }
+      { id: "report-multi-guide", layer: "scroll", x: 7.8, y: 28.4, w: 45.4, h: 8.5 },
+      { id: "report-multi-guide", layer: "scroll",  x: 60, y: 34, w: 29, h: 3.5},
+      { id: "report-multi-guide", layer: "scroll", x: 7, y: 70, w: 86, h: 4.5, },
+      { id: "report-multi-guide", layer: "scroll", x: 7, y: 53, w: 86, h: 3.5, }
     ]
+  },
+  morningListChat: {
+    src: "./assets/screens/morning-list-chat.png",
+    scrollHotspots: [
+      { label: "关闭投资机会分析", x: 2.5, y: 2.5, w: 10, h: 5, target: "report" }
+    ],
+    fixedHotspots: [],
+    guide: null
   },
   reportSubject: {
     src: "./assets/screens/morning-list-subject.png",
     scrollHotspots: [
       { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
-      { label: "查看特别提醒", x: 6.8, y: 20.4, w: 86.4, h: 5.5, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 48, y: 28, w: 40, h: 2.0, target: "aiTrader" },
-      { label: "重磅事件", x: 6, y: 34, w: 44, h: 2, target: "report" }
+      { label: "查看特别提醒", x: 6.8, y: 28.4, w: 40.4, h: 7.5, target: "specialNotice" },
+      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "aiTrader" },
+      { label: "重磅事件", x: 10, y: 53, w: 85, h: 3.5, target: "report" }
     ],
     fixedHotspots: [],
     guide: null
@@ -235,19 +245,22 @@ const screens = {
   trans: {
     src: "./assets/screens/trans.png",
     scrollHotspots: [
-      { label: "打开AI交易员", x: 38, y: 4.5, w: 34, h: 16.5, target: "aiTrader2" }
+      { label: "打开AI交易员", x: 25, y: 4.5, w: 70, h: 16.5, target: "aiTrader2" } 
     ],
     fixedHotspots: [],
-    guide: { id: "trans-more-nav", layer: "fixed", x: 80, y: 0, w: 20, h: 100 }
+    guide: [
+      { id: "trans-more-nav", layer: "fixed", x: 80, y: 0, w: 20, h: 100 },
+      { id: "trans-ai-trader", layer: "scroll", x: 25, y: 4.5, w: 70, h: 16.5}
+    ]
   },
   aiTrader2: {
     src: "./assets/screens/ai-trader-2.png",
     scrollHotspots: [
       { label: "关闭", x: 0, y: 0, w: 100, h: 10, target: "trans" },
-      { label: "黄金ETF网格计划", x: 3, y: 65, w: 94, h: 12, target: "aiTrader3" }
+      { label: "黄金ETF网格计划", x: 3, y: 65, w: 94, h: 8, target: "aiTrader3" }
     ],
     fixedHotspots: [],
-    guide: null
+    guide: { id: "ai-trader-2-plan", layer: "scroll", x: 3, y: 65, w: 94, h: 8 }
   },
   aiTrader3: {
     src: "./assets/screens/ai-trader-3.png",
@@ -503,7 +516,7 @@ function renderHotspots(screen) {
 }
 
 function syncBottomBarVisibility() {
-  bottomBar.hidden = ["kyc", "customize", "configPage", "sidebar", "chat", "account", "accountMng", "accountMng2", "accountMng3", "specialNotice", "aiTrader", "aiTrader2", "aiTrader3"].includes(activeKey)
+  bottomBar.hidden = ["kyc", "customize", "configPage", "sidebar", "chat", "account", "accountMng", "accountMng2", "accountMng3", "specialNotice", "aiTrader", "aiTrader2", "aiTrader3", "morningListChat"].includes(activeKey)
     || activeKey.startsWith("chatTask");
 }
 
@@ -773,7 +786,7 @@ function setActiveScreenGuide(screen = screens[activeKey]) {
     return;
   }
   if (activeKey === "trans") {
-    setGuideToElement(document.querySelector('.nav-item[data-nav="more"]'), "trans-more-nav");
+    setGuide(screen?.guide);
     return;
   }
   if (activeKey === "sidebar") {
@@ -879,7 +892,7 @@ function updateNavState(screenKey = activeKey, forceMore = false) {
       ? "trans"
       : screenKey === "watchlist"
         ? "watchlist"
-      : screenKey === "report" || screenKey === "reportSubject" || screenKey === "account" || screenKey === "accountMng" || screenKey === "accountMng2" || screenKey === "accountMng3" || screenKey === "specialNotice" || screenKey === "aiTrader"
+      : screenKey === "report" || screenKey === "reportSubject" || screenKey === "morningListChat" || screenKey === "account" || screenKey === "accountMng" || screenKey === "accountMng2" || screenKey === "accountMng3" || screenKey === "specialNotice" || screenKey === "aiTrader"
         ? "watch"
         : screenKey === "chat" || screenKey.startsWith("chatTask") || screenKey === "sidebar"
           ? "chat"
