@@ -43,9 +43,9 @@ const screens = {
   report: {
     src: "./assets/screens/morning-list.png",
     scrollHotspots: [
-      { label: "查看我的账户", x: 50, y: 3.8, w: 45, h: 5.8, target: "account" },
-      { label: "查看特别提醒", x: 6.8, y: 25.7, w: 86.4, h: 13.4, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 46, y: 34.7, w: 45, h: 4.2, target: "aiTrader" }
+      { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
+      { label: "查看特别提醒", x: 6.8, y: 22.4, w: 86.4, h: 14.5, target: "specialNotice" },
+      { label: "呼叫AI交易员制定计划", x: 48, y: 30.4, w: 43, h: 3.8, target: "aiTrader" }
     ],
     fixedHotspots: [],
     guide: { id: "report-trans-nav", layer: "fixed", x: 60, y: 0, w: 20, h: 100 }
@@ -53,7 +53,7 @@ const screens = {
   account: {
     src: "./assets/screens/account.png",
     scrollHotspots: [
-      { label: "关闭我的账户", x: 2.5, y: 5.2, w: 10, h: 6, target: "market" },
+      { label: "关闭我的账户", x: 3, y: 4.6, w: 34, h: 12, target: "market" },
       { label: "查看账户管家分析", x: 3, y: 35.2, w: 94, h: 7.5, target: "accountMng" }
     ],
     fixedHotspots: [],
