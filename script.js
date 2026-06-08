@@ -131,7 +131,7 @@ const screens = {
   specialNotice: {
     src: "./assets/screens/special-notice.png",
     scrollHotspots: [
-      { label: "关闭特别提醒", x: 3.8, y: 6.4, w: 10, h: 6, target: "report" }
+      { label: "关闭特别提醒", x: 3.8, y: 5.4, w: 10, h: 6, target: "report" }
     ],
     fixedHotspots: [],
     guide: null
