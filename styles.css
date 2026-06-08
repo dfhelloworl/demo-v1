@@ -2647,3 +2647,399 @@ body {
   color: #fff;
   box-shadow: 0 10px 22px rgba(83, 104, 245, 0.24);
 }
+
+/* Chat workspace visual language, aligned with the product design reference. */
+.chat-interaction {
+  --chat-ink: #15284d;
+  --chat-muted: #71809b;
+  --chat-blue: #2f6fff;
+  --chat-line: #e3eaf5;
+  --chat-card: rgba(255, 255, 255, 0.96);
+  --chat-soft: #f5f8fd;
+}
+
+.chat-interaction::before {
+  background: linear-gradient(180deg, #eaf3ff 0%, #f3f7fd 48%, #edf4fc 100%);
+}
+
+.chat-close-btn,
+.chat-menu-hit,
+.chat-audio-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #294878;
+  box-shadow: inset 0 0 0 1px rgba(221, 231, 245, 0.95);
+  backdrop-filter: none;
+}
+
+.chat-topbar strong {
+  color: var(--chat-ink);
+  font-size: 18px;
+}
+
+.chat-home {
+  gap: 8px;
+}
+
+.chat-home h1 {
+  margin-bottom: 2px;
+  color: var(--chat-ink);
+  font-size: 22px;
+}
+
+.chat-home-lead {
+  margin-bottom: 2px;
+  color: var(--chat-muted);
+  font-size: 12px;
+}
+
+.home-panel,
+.task-assistant-panel,
+.scenario-sheet,
+.chat-interaction.tab-ai-trader .chat-stream {
+  border: 1px solid var(--chat-line);
+  border-radius: 12px;
+  background: var(--chat-card);
+  box-shadow: 0 4px 12px rgba(42, 71, 113, 0.06);
+  backdrop-filter: none;
+}
+
+.home-panel {
+  gap: 6px;
+  padding: 11px 12px;
+}
+
+.home-panel-head {
+  padding-bottom: 7px;
+  border-bottom: 1px solid #edf1f7;
+}
+
+.home-panel-head strong,
+.sheet-head strong {
+  color: var(--chat-ink);
+  font-size: 15px;
+}
+
+.home-panel-head span,
+.scenario-sheet p {
+  color: var(--chat-muted);
+  font-size: 11px;
+}
+
+.market-row {
+  min-height: 30px;
+  border-bottom: 1px solid #f0f3f8;
+}
+
+.market-row:last-of-type {
+  border-bottom: 0;
+}
+
+.market-row b {
+  color: #1c2d4d;
+  font-size: 14px;
+}
+
+.market-row em {
+  font-size: 13px;
+}
+
+.home-more {
+  padding-top: 2px;
+  color: var(--chat-blue);
+  font-size: 12px;
+}
+
+.creator-panel button {
+  min-height: 28px;
+  align-items: center;
+  border-bottom: 1px solid #f0f3f8;
+  font-size: 12px;
+}
+
+.creator-panel button:last-child {
+  border-bottom: 0;
+}
+
+.home-skill-grid {
+  gap: 6px;
+}
+
+.home-skill-grid button {
+  min-height: 31px;
+  border-color: #dce6f4;
+  border-radius: 8px;
+  background: #f8faff;
+  color: #29456f;
+  font-size: 12px;
+}
+
+.scenario-sheet,
+.task-assistant-panel,
+.chat-interaction.tab-ai-trader .chat-stream {
+  padding: 10px;
+}
+
+.sheet-head {
+  margin-bottom: 6px;
+}
+
+.sheet-head button {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #f3f6fb;
+  color: #64738e;
+  font-size: 18px;
+}
+
+.scenario-sheet p {
+  margin-bottom: 8px;
+}
+
+.scenario-list,
+.task-panel-list {
+  gap: 7px;
+}
+
+.scenario-item,
+.task-panel-item,
+.trader-card {
+  border: 1px solid #e5ebf4;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.scenario-item {
+  padding: 10px;
+}
+
+.scenario-item h4,
+.task-panel-item strong {
+  color: var(--chat-ink);
+  font-size: 14px;
+}
+
+.scenario-item p,
+.task-panel-item span {
+  color: var(--chat-muted);
+  font-size: 11px;
+}
+
+.scenario-item button {
+  width: 52px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: #edf4ff;
+  color: var(--chat-blue);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.task-panel-tabs,
+.task-panel-subtabs {
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.task-panel-tabs button,
+.task-panel-subtabs button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 28px;
+  border: 1px solid #e2e9f4;
+  border-radius: 8px;
+  background: #f7f9fc;
+  color: #71809b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.task-panel-tabs button.selected,
+.task-panel-subtabs button.selected {
+  border-color: #bcd1fa;
+  background: #edf4ff;
+  color: #245fcf;
+}
+
+.compute-strip {
+  margin-bottom: 6px;
+  padding: 8px 10px;
+  border: 1px solid #edf1f7;
+  border-radius: 8px;
+  background: #f8faff;
+  font-size: 11px;
+}
+
+.compute-strip b {
+  font-size: 15px;
+}
+
+.task-cost {
+  margin: 2px 0 8px;
+  color: #3973dc;
+  font-size: 11px;
+}
+
+.task-panel-item {
+  gap: 4px;
+  padding: 10px 30px 10px 11px;
+}
+
+.task-panel-item::after {
+  right: 10px;
+  color: #8aa4cd;
+  font-size: 20px;
+}
+
+.task-panel-item em {
+  color: #5880b8;
+  font-size: 10px;
+}
+
+.chat-tabs {
+  height: 34px;
+  gap: 5px;
+}
+
+.chat-chip {
+  border-color: #dfe7f3;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #6c7b95;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(42, 71, 113, 0.05);
+}
+
+.chat-chip.selected {
+  border-color: #a9c5fa;
+  background: #edf4ff;
+  color: #245fcf;
+  box-shadow: none;
+}
+
+.chat-interaction.show .chat-input-bar {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 4px 12px rgba(42, 71, 113, 0.07),
+    inset 0 0 0 1px rgba(218, 228, 242, 0.95);
+}
+
+.chat-interaction.show .round-action {
+  border-radius: 9px;
+  background: #f4f7fb;
+  color: #526784;
+  box-shadow: inset 0 0 0 1px #e0e8f3;
+}
+
+.chat-interaction.show .round-action.active {
+  background: #edf4ff;
+  color: var(--chat-blue);
+  box-shadow: inset 0 0 0 1px #b8cefa;
+}
+
+.chat-bubble {
+  border: 1px solid #e3eaf5;
+  border-radius: 10px;
+  padding: 9px 11px;
+  box-shadow: none;
+}
+
+.chat-bubble.user {
+  border-color: #bcd5ff;
+  background: #eaf3ff;
+  color: #1c345e;
+}
+
+.chat-bubble.assistant {
+  background: #fff;
+  color: #263957;
+}
+
+.task-confirm-card,
+.super-run-card,
+.super-confirm-card {
+  border: 1px solid var(--chat-line);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(42, 71, 113, 0.05);
+}
+
+.task-confirm-main {
+  color: var(--chat-ink);
+  font-size: 15px;
+}
+
+.task-grid,
+.super-step,
+.super-file-row,
+.trader-order {
+  border-color: #e6edf6;
+  border-radius: 8px;
+  background: #f7f9fc;
+}
+
+.task-subscribe-btn,
+.super-run-btn.primary,
+.trader-actions .primary {
+  border-radius: 8px;
+  background: #3977f6;
+  box-shadow: none;
+}
+
+.task-action-btn,
+.super-run-btn,
+.super-confirm-option,
+.super-confirm-custom-btn,
+.super-confirm-submit,
+.trader-tools button,
+.trader-actions button {
+  border-radius: 8px;
+}
+
+.trader-card {
+  gap: 8px;
+  padding: 10px;
+}
+
+.trader-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #edf4ff;
+  color: #3977f6;
+  box-shadow: inset 0 0 0 1px #d8e6ff;
+}
+
+.trader-head strong {
+  color: var(--chat-ink);
+  font-size: 16px;
+}
+
+.trader-mode {
+  border-radius: 8px;
+  background: #f7f9fc;
+}
+
+.trader-mode b {
+  border-radius: 6px;
+  background: #fff0f5;
+  color: #d94d80;
+  font-size: 11px;
+}
+
+.trader-copy p,
+.trader-order-text {
+  color: #273955;
+  font-size: 12px;
+}
+
+.trader-order-text {
+  border-color: #e2e9f3;
+  border-radius: 8px;
+}
