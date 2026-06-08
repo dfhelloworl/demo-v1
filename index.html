@@ -98,14 +98,33 @@
           </div>
           <div class="chat-interaction" id="chatInteraction" aria-hidden="true">
             <div class="home-card-mask" id="homeCardMask" aria-hidden="true"></div>
-            <button class="chat-menu-hit" id="chatMenuBtn" type="button" aria-label="打开侧边栏"></button>
+            <header class="chat-topbar" aria-label="对话顶部栏">
+              <button class="chat-close-btn" id="chatCloseBtn" type="button" aria-label="关闭对话页">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M15 18 9 12l6-6" />
+                </svg>
+              </button>
+              <button class="chat-menu-hit" id="chatMenuBtn" type="button" aria-label="打开侧边栏">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 7h14M5 12h10M5 17h14" />
+                </svg>
+              </button>
+              <strong>新对话</strong>
+              <button class="chat-audio-btn" type="button" aria-label="语音播报">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 10v4h4l5 4V6L8 10H4Z" />
+                  <path d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7 7 0 0 1 0 10" />
+                </svg>
+              </button>
+            </header>
             <section class="top-mode-tabs" id="topModeTabs" aria-label="页面切换">
               <!-- <button class="top-mode-tab selected" type="button" data-mode="chat">对话</button>
               <button class="top-mode-tab" type="button" data-mode="task">任务助手</button> -->
             </section>
 
             <section class="chat-home" id="chatHome" aria-label="今日开始">
-              <h1>今天从哪里开始？</h1>
+              <h1>今天想看什么？</h1>
+              <p class="chat-home-lead">可以直接输入问题，也可以从下面的高频场景开始。</p>
               <article class="home-panel hot-targets">
                 <div class="home-panel-head"><strong>今日热议标的</strong><span>实时行情</span></div>
                 <button class="market-row" type="button" data-prompt="帮我分析宁德时代今天大涨的原因，以及新能源板块是否还能延续"><b>1. 宁德时代</b><em class="up">+6.2%</em><span>#新能源</span></button>
@@ -130,7 +149,7 @@
             </section>
 
             <section class="task-assistant-panel" id="taskAssistantPanel" aria-hidden="true">
-              <div class="task-panel-head"><button class="task-panel-back" id="taskPanelBack" type="button" aria-label="返回">‹</button><strong>任务助手</strong></div>
+              <!-- <div class="task-panel-head"><button class="task-panel-back" id="taskPanelBack" type="button" aria-label="返回">‹</button><strong>任务助手</strong></div> -->
               <div class="task-panel-tabs"><button type="button">盯盘任务</button><button type="button">定时任务</button><button class="selected" type="button">复合任务</button></div>
               <div class="task-panel-subtabs"><button class="selected" type="button">创建任务</button><button type="button">今日完成 5</button><button type="button">进行中</button><button type="button">已结束</button></div>
               <div class="compute-strip"><span>剩余算力:<b>2005</b></span><button type="button">300算力待领取 ›</button></div>

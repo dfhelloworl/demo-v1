@@ -958,14 +958,33 @@ body {
   pointer-events: none;
 }
 
+.chat-interaction::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(104, 156, 255, 0.2), transparent 28%),
+    radial-gradient(circle at 90% 82%, rgba(64, 189, 255, 0.15), transparent 30%),
+    linear-gradient(180deg, #edf6ff 0%, #f7fbff 52%, #eef5ff 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
 .chat-interaction.show {
   display: block;
   pointer-events: none;
 }
 
+.chat-interaction.show::before {
+  opacity: 1;
+}
+
 .chat-interaction.show .chat-input-bar,
 .chat-interaction.show .chat-tabs,
-.chat-interaction.show .chat-menu-hit {
+.chat-interaction.show .chat-close-btn,
+.chat-interaction.show .chat-menu-hit,
+.chat-interaction.show .chat-audio-btn {
   pointer-events: auto;
 }
 
@@ -974,28 +993,74 @@ body {
 }
 
 .chat-interaction.keyboard-open .chat-tabs {
-  bottom: 265px;
+  bottom: 302px;
 }
 
 .chat-interaction.keyboard-open .chat-input-bar {
-  bottom: 206px;
+  bottom: 216px;
 }
 
 .chat-interaction.keyboard-open .chat-stream {
-  bottom: 320px;
+  bottom: 356px;
 }
 
-.chat-menu-hit {
+.chat-topbar {
   position: absolute;
-  left: 12.5%;
-  top: 6.4%;
-  width: 8%;
-  height: 3.8%;
+  z-index: 14;
+  left: 7.5%;
+  right: 7.5%;
+  top: 56px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  color: #172747;
+  pointer-events: none;
+}
+
+.chat-topbar strong {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 19px;
+  line-height: 1;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.chat-close-btn,
+.chat-menu-hit,
+.chat-audio-btn {
+  width: 40px;
+  height: 40px;
   border: 0;
-  background: transparent;
-  border-radius: 10px;
-  pointer-events: auto;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
+  color: #33518b;
+  box-shadow:
+    0 8px 20px rgba(39, 74, 132, 0.08),
+    inset 0 0 0 1px rgba(213, 226, 247, 0.8);
   cursor: pointer;
+  backdrop-filter: blur(14px);
+}
+
+.chat-close-btn {
+  margin-right: 8px;
+}
+
+.chat-menu-hit svg,
+.chat-close-btn svg,
+.chat-audio-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chat-audio-btn {
+  margin-left: auto;
 }
 
 .home-card-mask {
@@ -1008,9 +1073,10 @@ body {
 
 .chat-stream {
   position: absolute;
+  z-index: 2;
   left: 5.5%;
   right: 5.5%;
-  top: 16%;
+  top: 118px;
   bottom: 130px;
   display: none;
   flex-direction: column;
@@ -1443,16 +1509,17 @@ body {
 
 .chat-input-bar {
   position: absolute;
-  left: 7.5%;
-  right: 7.5%;
-  bottom: 20px;
-  min-height: 48px;
+  z-index: 13;
+  left: 8%;
+  right: 8%;
+  bottom: 28px;
+  min-height: 54px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 8px 10px 8px 14px;
   border: 0;
-  border-radius: 30px;
+  border-radius: 27px;
   background: transparent;
   pointer-events: auto;
   transition: bottom 0.2s ease;
@@ -1466,14 +1533,16 @@ body {
 }
 
 .voice-label {
-  margin: 0 auto;
+  min-width: 0;
+  margin: 0;
+  flex: 1;
   color: transparent;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .chat-interaction.show .voice-label {
-  color: #2d3a67;
+  color: #33456d;
 }
 
 .chat-interaction.keyboard-mode .voice-label {
@@ -1490,34 +1559,38 @@ body {
 
 .chat-interaction.keyboard-mode .chat-input-wrap {
   display: flex;
-  padding: 0 74px 0 44px;
+  padding: 0 82px 0 0;
 }
 
 .chat-input {
   width: 100%;
-  min-height: 42px;
+  min-height: 48px;
+  max-height: 86px;
   resize: none;
-  border: 1px solid #d8deea;
-  border-radius: 14px;
+  border: 1px solid #d9e3f2;
+  border-radius: 18px;
   outline: 0;
-  padding: 9px 12px;
+  padding: 11px 13px;
   color: #2d3a67;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 1.35;
   background: #fff;
-  box-shadow: 0 4px 14px rgba(26, 41, 74, 0.08);
+  box-shadow: 0 4px 14px rgba(26, 41, 74, 0.07);
 }
 
 .chat-input-actions {
   position: absolute;
-  right: 12px;
+  right: 11px;
+  top: 50%;
   display: flex;
-  gap: 8px;
+  gap: 7px;
+  transform: translateY(-50%);
 }
 
 .round-action {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
   border: 0;
@@ -1830,8 +1903,8 @@ body {
   bottom: 0;
   z-index: 11;
   display: none;
-  height: 198px;
-  padding: 10px 6px;
+  height: 206px;
+  padding: 12px 6px 14px;
   border-top: 1px solid #cfd7e6;
   background: linear-gradient(180deg, #e7ebf3 0%, #dfe5ef 100%);
   color: #22345f;
@@ -1840,14 +1913,15 @@ body {
 
 .fake-keyboard.show {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .fake-keyboard div {
   display: flex;
   justify-content: center;
-  word-spacing: 10px;
-  font-size: 13px;
+  word-spacing: 13px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 @keyframes guidePulse {
@@ -1969,9 +2043,10 @@ body {
 
 .chat-home {
   position: absolute;
+  z-index: 2;
   left: 7.5%;
   right: 7.5%;
-  top: 20%;
+  top: 126px;
   bottom: 156px;
   display: grid;
   align-content: start;
@@ -1988,27 +2063,38 @@ body {
 }
 
 .chat-interaction.chat-active .chat-home,
-.chat-interaction.keyboard-mode .chat-home,
 .chat-interaction.task-panel-open .chat-home,
 .chat-interaction.task-assistant-mode .chat-home {
   display: none;
 }
 
+.chat-interaction.keyboard-open:not(.chat-active):not(.task-panel-open):not(.task-assistant-mode) .chat-home {
+  display: grid;
+  bottom: 356px;
+}
+
 .chat-home h1 {
   margin: 0 0 4px;
   color: #26385f;
-  font-size: 29px;
+  font-size: 25px;
   line-height: 1.1;
+}
+
+.chat-home-lead {
+  margin: -2px 0 4px;
+  color: #61718e;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .home-panel {
   display: grid;
   gap: 8px;
-  padding: 12px;
-  border: 1px solid rgba(224, 233, 247, 0.86);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 10px 24px rgba(41, 67, 108, 0.08);
+  padding: 13px;
+  border: 1px solid rgba(224, 233, 247, 0.9);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 28px rgba(41, 67, 108, 0.08);
   backdrop-filter: blur(16px);
 }
 
@@ -2279,11 +2365,11 @@ body {
 
 .chat-tabs {
   z-index: 13;
-  left: 7.5%;
-  right: 7.5%;
-  bottom: 104px;
-  height: 40px;
-  gap: 8px;
+  left: 8%;
+  right: 8%;
+  bottom: 92px;
+  height: 38px;
+  gap: 7px;
   overflow: visible;
   padding: 0;
   border-radius: 0;
@@ -2293,13 +2379,16 @@ body {
 
 .chat-chip {
   height: 100%;
-  padding: 0 16px;
+  flex: 1 1 0;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 10px;
   margin: 0;
   border: 1px solid rgba(218, 229, 246, 0.86);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.8);
+  border-radius: 19px;
+  background: rgba(255, 255, 255, 0.82);
   color: rgba(50, 70, 108, 0.74);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   box-shadow: 0 8px 20px rgba(41, 68, 109, 0.08);
 }
@@ -2310,6 +2399,7 @@ body {
   color: #1f62d8;
 }
 
+.chat-interaction.task-assistant-mode .chat-close-btn,
 .chat-interaction.task-assistant-mode .chat-menu-hit,
 .chat-interaction.task-assistant-mode .chat-home,
 .chat-interaction.task-assistant-mode .chat-stream,
@@ -2324,12 +2414,13 @@ body {
 .trader-card {
   align-self: stretch;
   display: grid;
-  gap: 14px;
-  padding: 18px;
-  border: 1px solid rgba(225, 229, 255, 0.9);
-  border-radius: 24px;
-  background: rgba(244, 245, 255, 0.94);
-  box-shadow: 0 12px 28px rgba(50, 62, 115, 0.1);
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(210, 222, 246, 0.95);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 14px 34px rgba(43, 72, 118, 0.1);
+  backdrop-filter: blur(18px);
 }
 
 .trader-head,
@@ -2341,68 +2432,111 @@ body {
   gap: 10px;
 }
 
+.trader-head {
+  justify-content: flex-start;
+}
+
 .trader-avatar {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
   display: grid;
   place-items: center;
-  border-radius: 14px;
-  background: #fff;
-  color: #6271f2;
+  border-radius: 13px;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f6ff 100%);
+  color: #5368ff;
   font-weight: 900;
+  box-shadow: inset 0 0 0 1px rgba(224, 231, 255, 0.9);
+}
+
+.trader-head > div:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
 }
 
 .trader-head strong {
-  color: #202536;
-  font-size: 23px;
+  color: #172033;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.trader-head span {
+  overflow: hidden;
+  color: #73819a;
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trader-mode {
+  justify-content: flex-start;
+  min-width: 0;
+  padding: 4px;
+  border-radius: 15px;
+  background: rgba(244, 247, 255, 0.9);
 }
 
 .trader-mode b {
-  padding: 7px 12px;
-  border-radius: 13px;
-  background: #f3d6e9;
-  color: #d83b7a;
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: #f9e3ef;
+  color: #d93d7b;
+  font-size: 13px;
 }
 
 .trader-mode span {
   min-width: 0;
   overflow: hidden;
-  color: #8a92a4;
+  color: #7a869b;
+  font-size: 12px;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.trader-intro,
-.trader-question {
+.trader-copy {
+  display: grid;
+  gap: 6px;
+  padding: 2px 0 0;
+}
+
+.trader-copy p {
   margin: 0;
-  color: #202536;
-  font-size: 18px;
-  font-weight: 800;
+  color: #20283a;
+  font-size: 14px;
+  font-weight: 700;
   line-height: 1.5;
 }
 
 .trader-order {
   display: grid;
-  gap: 10px;
-  padding: 16px;
-  border-radius: 22px;
-  background: rgba(250, 251, 255, 0.62);
+  gap: 8px;
+  padding: 10px;
+  border-radius: 15px;
+  background: rgba(246, 249, 255, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(225, 232, 246, 0.8);
 }
 
 .trader-order label {
-  padding-left: 10px;
-  border-left: 4px solid #6d7dff;
-  color: #8a92a4;
+  padding-left: 8px;
+  border-left: 3px solid #5368ff;
+  color: #7a869b;
+  font-size: 13px;
   font-weight: 800;
 }
 
 .trader-order-text {
-  padding: 14px;
-  border: 1px solid rgba(210, 215, 255, 0.95);
-  border-radius: 16px;
+  padding: 10px 11px;
+  border: 1px solid rgba(207, 216, 247, 0.95);
+  border-radius: 13px;
   background: #fff;
-  color: #252a3a;
+  color: #20283a;
+  font-size: 14px;
   font-weight: 700;
+  line-height: 1.42;
 }
 
 .trader-tools,
@@ -2412,24 +2546,27 @@ body {
 
 .trader-tools button,
 .trader-actions button {
-  min-height: 36px;
+  min-height: 32px;
   border: 0;
-  border-radius: 18px;
-  padding: 0 14px;
-  background: #e8e9ff;
-  color: #6271f2;
+  border-radius: 17px;
+  padding: 0 12px;
+  background: #edf0ff;
+  color: #5368ff;
   font-family: inherit;
+  font-size: 13px;
   font-weight: 800;
   cursor: pointer;
 }
 
 .trader-actions button {
-  flex: 1 1 120px;
-  min-height: 46px;
+  flex: 1 1 112px;
+  min-height: 40px;
   background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(221, 229, 244, 0.9);
 }
 
 .trader-actions .primary {
-  background: linear-gradient(180deg, #7482ff 0%, #5869f3 100%);
+  background: linear-gradient(180deg, #6778ff 0%, #5368f5 100%);
   color: #fff;
+  box-shadow: 0 10px 22px rgba(83, 104, 245, 0.24);
 }

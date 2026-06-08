@@ -91,7 +91,7 @@ const screens = {
       { label: "侧边栏", x: 12, y: 6.8, w: 7.5, h: 3, target: "sidebar" }
     ],
     fixedHotspots: [],
-    guide: { id: "chat-sidebar", layer: "scroll", x: 12, y: 6.8, w: 7.5, h: 3 }
+    guide: null
   },
   chatTaskAssistant: {
     src: "./assets/screens/task-list-1.png",
@@ -265,6 +265,7 @@ const taskAssistantPanel = document.querySelector("#taskAssistantPanel");
 const taskPanelBack = document.querySelector("#taskPanelBack");
 const chatStream = document.querySelector("#chatStream");
 const chatTabs = document.querySelector(".chat-tabs");
+const chatCloseBtn = document.querySelector("#chatCloseBtn");
 const chatMenuBtn = document.querySelector("#chatMenuBtn");
 const chatInputBar = document.querySelector("#chatInputBar");
 const chatInput = document.querySelector("#chatInput");
@@ -859,13 +860,26 @@ function appendTraderCard() {
   scenarioSheet.setAttribute("aria-hidden", "true");
   plusPanel.classList.remove("show");
 
+  const existingCard = chatStream.querySelector(".trader-card");
+  if (existingCard) {
+    existingCard.scrollIntoView({ block: "nearest" });
+    return;
+  }
+
   const card = document.createElement("article");
   card.className = "trader-card";
   card.innerHTML = `
-    <div class="trader-head"><div class="trader-avatar">AI</div><strong>AI交易员</strong></div>
-    <div class="trader-mode"><b>深度思考</b><span>已读取最新指令和交易执行情况⌄</span></div>
-    <p class="trader-intro">我收到了来自账户管家的派单，说你希望对持仓的部分股票进行卖出操作。</p>
-    <p class="trader-question">需要我帮你围绕以下要求制定交易计划吗？</p>
+    <div class="trader-head">
+      <div class="trader-avatar">AI</div>
+      <div>
+        <strong>AI交易员</strong>
+        <span>已读取最新指令和执行记录</span>
+      </div>
+    </div>
+    <div class="trader-mode"><b>深度思考</b><span>等待你确认交易计划</span></div>
+    <div class="trader-copy">
+      <p>我收到了账户管家的卖出派单。是否需要基于触发条件、仓位和风险，生成一份交易计划？</p>
+    </div>
     <div class="trader-order">
       <label>来自管家的派单</label>
       <div class="trader-order-text">再跌就卖出复旦微电和中芯国际一定仓位</div>
@@ -896,7 +910,6 @@ function setKeyboardMode(on) {
   keyboardToggle.classList.toggle("active", on);
   fakeKeyboard.classList.toggle("show", on);
   if (on) {
-    chatInteraction.classList.add("chat-active");
     chatInput.focus();
   }
 }
@@ -1050,6 +1063,7 @@ function fillPromptToInput(prompt) {
   scenarioSheet.setAttribute("aria-hidden", "true");
 }
 
+chatCloseBtn.addEventListener("click", () => showScreen("report"));
 chatMenuBtn.addEventListener("click", () => showScreen("sidebar"));
 
 topModeTabs.addEventListener("click", (event) => {
@@ -1256,16 +1270,16 @@ function applyEdit(runNow) {
 editSubscribe.addEventListener("click", () => applyEdit(false));
 editRun.addEventListener("click", () => applyEdit(true));
 
-chatInteraction.addEventListener("pointerdown", (event) => {
+document.addEventListener("pointerdown", (event) => {
   if (!chatInteraction.classList.contains("keyboard-mode")) return;
   const interactiveTarget = event.target.closest(
-    "button, textarea, input, .chat-input-bar, .plus-panel, .scenario-sheet, .task-edit-sheet, .super-run-card, .super-confirm-card"
+    "textarea, input, .chat-input-bar, .plus-panel, .scenario-sheet, .task-edit-sheet, .super-run-card, .super-confirm-card"
   );
   if (interactiveTarget) return;
   setKeyboardMode(false);
   closePlusPanel();
   chatInput.blur();
-});
+}, true);
 
 function startSuperBacktestCase() {
   const promptText = "帮我回测我自选股里 15 只消费股近 3 年的净值曲线，对比沪深 300 的超额收益，生成可视化对比图和 PDF 分析报告";
