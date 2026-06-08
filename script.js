@@ -18,10 +18,19 @@ const screens = {
   market: {
     src: "./assets/screens/market-long.png",
     scrollHotspots: [
+      { label: "长按编辑大盘", x: 68, y: 10.2, w: 23, h: 3.6, target: "configPage", dismissGuide: "market-edit-entry" },
       { label: "查看我的账户", x: 50, y: 3.8, w: 45, h: 5.8, target: "account" }
     ],
     fixedHotspots: [],
-    guide: { id: "market-watch-nav", layer: "fixed", x: 20, y: 0, w: 20, h: 100 }
+    guide: {
+      id: "market-edit-entry",
+      layer: "scroll",
+      x: 68,
+      y: 10.2,
+      w: 23,
+      h: 3.6,
+      copy: "长按进行编辑页面"
+    }
   },
   customize: {
     src: "./assets/screens/customize-cards.png",
@@ -35,7 +44,7 @@ const screens = {
     src: "./assets/screens/config-page.png",
     scrollHotspots: [
       { label: "添加卡片", x: 3.5, y: 5.5, w: 23, h: 5, target: "customize" },
-      { label: "关闭定制页面", x: 78, y: 5.5, w: 18, h: 5, target: "market", dismissGuide: "market-generated-customize" }
+      { label: "关闭定制页面", x: 78, y: 5.5, w: 18, h: 5, target: "market", dismissGuide: "market-edit-entry" }
     ],
     fixedHotspots: [],
     guide: null
@@ -244,17 +253,19 @@ const navItems = {
   }
 };
 
-const demoVersion = "2.0";
+const demoVersion = "2.1";
 const assetVersion = `v${demoVersion}`;
 document.documentElement.dataset.demoVersion = demoVersion;
 const image = document.querySelector("#screenImage");
 const kycScreen = document.querySelector("#kycScreen");
 const confirmCard = document.querySelector("#confirmCard");
 const hotspotsLayer = document.querySelector("#hotspots");
+const configModules = document.querySelector("#configModules");
 const fixedHotspotsLayer = document.querySelector("#fixedHotspots");
 const scrollArea = document.querySelector("#scrollArea");
 const bottomBar = document.querySelector("#bottomBar");
 const guideLayer = document.querySelector("#guideLayer");
+const guideCopy = document.querySelector("#guideCopy");
 const moreMenu = document.querySelector("#moreMenu");
 const moreModal = document.querySelector("#moreModal");
 const screenStage = document.querySelector("#screenStage");
@@ -304,6 +315,15 @@ const dismissedGuideIds = new Set();
 let selectedImages = [];
 let pendingImages = [];
 
+const configModuleRects = [
+  { label: "指数行情", x: 3.2, y: 9.7, w: 93.6, h: 32.8 },
+  { label: "涨跌成交", x: 6.8, y: 42.7, w: 86.4, h: 8.0 },
+  { label: "乐友风向", x: 6.8, y: 52.4, w: 86.4, h: 15.0 },
+  { label: "资金迁移", x: 6.8, y: 68.3, w: 41.8, h: 18.4 },
+  { label: "黄金收盘", x: 51.6, y: 68.3, w: 41.8, h: 18.4 },
+  { label: "华泰观市", x: 6.8, y: 87.4, w: 86.4, h: 8.2 }
+];
+
 function makeHotspot(spot, className) {
   const node = document.createElement("button");
   node.type = "button";
@@ -336,6 +356,7 @@ function makeHotspot(spot, className) {
 function renderHotspots(screen) {
   hotspotsLayer.innerHTML = "";
   fixedHotspotsLayer.innerHTML = "";
+  renderConfigModules();
 
   screen.scrollHotspots.forEach((spot) => {
     hotspotsLayer.appendChild(makeHotspot(spot, "hotspot"));
@@ -355,6 +376,7 @@ function syncBottomBarVisibility() {
 
 function syncHotspotLayerHeight() {
   hotspotsLayer.style.height = `${image.offsetHeight}px`;
+  syncConfigModuleBackgrounds();
 }
 
 function runScreenSlide(className) {
@@ -393,6 +415,9 @@ function prepareGuide(guideId) {
   activeGuideId = guideId || null;
   const hidden = !guideId || dismissedGuideIds.has(guideId);
   guideLayer.hidden = hidden;
+  if (hidden) {
+    guideCopy.textContent = "";
+  }
   return !hidden;
 }
 
@@ -408,6 +433,7 @@ function setGuide(guide, handSide = "right") {
   if (!guide) {
     activeGuideId = null;
     guideLayer.hidden = true;
+    guideCopy.textContent = "";
     return;
   }
   if (!prepareGuide(guide.id)) return;
@@ -427,12 +453,14 @@ function setGuide(guide, handSide = "right") {
   const h = (guide.h / 100) * basis.height;
 
   applyGuideBounds(x, y, w, h, handSide);
+  guideCopy.textContent = guide.copy || "";
 }
 
 function setGuideToElement(element, guideId, offsetY = 0, handSide = "right") {
   if (!element) {
     activeGuideId = null;
     guideLayer.hidden = true;
+    guideCopy.textContent = "";
     return;
   }
   if (!prepareGuide(guideId)) return;
@@ -445,6 +473,40 @@ function setGuideToElement(element, guideId, offsetY = 0, handSide = "right") {
   const h = targetRect.height;
 
   applyGuideBounds(x, y, w, h, handSide);
+  guideCopy.textContent = "";
+}
+
+function renderConfigModules() {
+  configModules.innerHTML = "";
+  const editing = activeKey === "configPage";
+  configModules.classList.toggle("is-active", editing);
+  if (!editing) return;
+
+  configModuleRects.forEach((rect, index) => {
+    const node = document.createElement("div");
+    node.className = "config-module";
+    node.setAttribute("aria-label", rect.label);
+    node.style.left = `${rect.x}%`;
+    node.style.top = `${rect.y}%`;
+    node.style.width = `${rect.w}%`;
+    node.style.height = `${rect.h}%`;
+    node.style.animationDelay = `${index * -0.13}s`;
+    configModules.appendChild(node);
+  });
+
+  requestAnimationFrame(syncConfigModuleBackgrounds);
+}
+
+function syncConfigModuleBackgrounds() {
+  if (activeKey !== "configPage" || !configModules.classList.contains("is-active")) return;
+  const width = image.offsetWidth;
+  const height = image.offsetHeight;
+  configModules.querySelectorAll(".config-module").forEach((node, index) => {
+    const rect = configModuleRects[index];
+    node.style.backgroundImage = `url("${screens.configPage.src}?v=${assetVersion}")`;
+    node.style.backgroundSize = `${width}px ${height}px`;
+    node.style.backgroundPosition = `-${(rect.x / 100) * width}px -${(rect.y / 100) * height}px`;
+  });
 }
 
 function setMoreModalGuide() {
@@ -502,7 +564,7 @@ function setActiveScreenGuide(screen = screens[activeKey]) {
     return;
   }
   if (activeKey === "market") {
-    setGuideToElement(document.querySelector('.nav-item[data-nav="watch"]'), "market-watch-nav");
+    setGuide(screen?.guide);
     return;
   }
   if (activeKey === "report") {
@@ -647,7 +709,7 @@ kycScreen.querySelectorAll(".kyc-card").forEach((card) => {
 });
 
 confirmCard.querySelector(".btn-customize").addEventListener("click", () => {
-  showScreen("configPage");
+  showScreen("customize");
 });
 
 confirmCard.querySelector(".btn-recommend").addEventListener("click", () => {

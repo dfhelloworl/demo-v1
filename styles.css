@@ -509,6 +509,36 @@ body {
   user-select: none;
 }
 
+.config-modules {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.config-modules.is-active {
+  display: block;
+}
+
+.config-module {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 18px;
+  background-repeat: no-repeat;
+  box-shadow:
+    0 12px 22px rgba(20, 38, 72, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.72);
+  transform-origin: 50% 45%;
+  animation: configJiggle 0.24s ease-in-out infinite alternate;
+}
+
+.config-module:nth-child(2),
+.config-module:nth-child(4),
+.config-module:nth-child(6) {
+  animation-name: configJiggleReverse;
+}
+
 .screen-stage.is-sliding-in-from-left {
   animation: screenSlideInFromLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
@@ -722,6 +752,38 @@ body {
     0 0 0 2px rgba(58, 112, 255, 0.7),
     0 0 0 8px rgba(58, 112, 255, 0.12);
   animation: guidePulse 1.6s ease-in-out infinite;
+}
+
+.guide-copy {
+  position: absolute;
+  left: min(calc(var(--guide-x, 0) + var(--guide-w, 0) - 154px), calc(100% - 174px));
+  top: max(18px, calc(var(--guide-y, 0) - 46px));
+  min-width: 144px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  background: rgba(22, 34, 58, 0.86);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.15;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 10px 24px rgba(24, 36, 60, 0.22);
+  backdrop-filter: blur(12px);
+}
+
+.guide-copy:empty {
+  display: none;
+}
+
+.guide-copy::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: inherit;
+  transform: rotate(45deg);
 }
 
 .guide-hand {
@@ -2019,6 +2081,26 @@ body {
 
   68% {
     transform: translate(0, 0) rotate(18deg) scale(-0.94, 0.94);
+  }
+}
+
+@keyframes configJiggle {
+  from {
+    transform: rotate(-0.55deg) translate3d(-1px, 0, 0);
+  }
+
+  to {
+    transform: rotate(0.55deg) translate3d(1px, 1px, 0);
+  }
+}
+
+@keyframes configJiggleReverse {
+  from {
+    transform: rotate(0.5deg) translate3d(1px, 0, 0);
+  }
+
+  to {
+    transform: rotate(-0.5deg) translate3d(-1px, 1px, 0);
   }
 }
 
