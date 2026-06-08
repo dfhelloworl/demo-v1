@@ -1157,6 +1157,9 @@ document.querySelectorAll(".chat-chip").forEach((chip) => {
       guideDismissed = true;
       guideLayer.hidden = true;
     }
+    setKeyboardMode(false);
+    closePlusPanel();
+    chatInput.blur();
     document.querySelectorAll(".chat-chip").forEach((item) => item.classList.remove("selected"));
     chip.classList.add("selected");
     hidePreviousTabModule();
@@ -1270,7 +1273,7 @@ function applyEdit(runNow) {
 editSubscribe.addEventListener("click", () => applyEdit(false));
 editRun.addEventListener("click", () => applyEdit(true));
 
-document.addEventListener("pointerdown", (event) => {
+function dismissKeyboardFromOutside(event) {
   if (!chatInteraction.classList.contains("keyboard-mode")) return;
   const interactiveTarget = event.target.closest(
     "textarea, input, .chat-input-bar, .plus-panel, .scenario-sheet, .task-edit-sheet, .super-run-card, .super-confirm-card"
@@ -1279,7 +1282,13 @@ document.addEventListener("pointerdown", (event) => {
   setKeyboardMode(false);
   closePlusPanel();
   chatInput.blur();
-}, true);
+}
+
+document.addEventListener("pointerdown", dismissKeyboardFromOutside, true);
+document.addEventListener("mousedown", dismissKeyboardFromOutside, true);
+document.addEventListener("click", dismissKeyboardFromOutside, true);
+scrollArea.addEventListener("pointerdown", dismissKeyboardFromOutside, true);
+scrollArea.addEventListener("click", dismissKeyboardFromOutside, true);
 
 function startSuperBacktestCase() {
   const promptText = "帮我回测我自选股里 15 只消费股近 3 年的净值曲线，对比沪深 300 的超额收益，生成可视化对比图和 PDF 分析报告";
