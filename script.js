@@ -1176,12 +1176,14 @@ document.querySelectorAll(".chat-chip").forEach((chip) => {
   });
 });
 
-taskPanelBack.addEventListener("click", () => {
-  chatInteraction.classList.remove("task-panel-open");
-  document.querySelectorAll(".chat-chip").forEach((item) => {
-    item.classList.toggle("selected", item.dataset.tab === "技能");
+if (taskPanelBack) {
+  taskPanelBack.addEventListener("click", () => {
+    chatInteraction.classList.remove("task-panel-open");
+    document.querySelectorAll(".chat-chip").forEach((item) => {
+      item.classList.toggle("selected", item.dataset.tab === "技能");
+    });
   });
-});
+}
 
 scenarioClose.addEventListener("click", () => {
   scenarioSheet.classList.remove("show");
@@ -1275,7 +1277,10 @@ editRun.addEventListener("click", () => applyEdit(true));
 
 function dismissKeyboardFromOutside(event) {
   if (!chatInteraction.classList.contains("keyboard-mode")) return;
-  const interactiveTarget = event.target.closest(
+  const targetElement = event.target instanceof Element
+    ? event.target
+    : event.target?.parentElement;
+  const interactiveTarget = targetElement?.closest(
     "textarea, input, .chat-input-bar, .plus-panel, .scenario-sheet, .task-edit-sheet, .super-run-card, .super-confirm-card"
   );
   if (interactiveTarget) return;
