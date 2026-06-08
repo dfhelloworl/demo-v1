@@ -62,7 +62,7 @@ const screens = {
     scrollHotspots: [
       { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
       { label: "查看特别提醒", x: 6.8, y: 28.4, w: 40.4, h: 7.5, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "aiTrader" },
+      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "chat", chatTab: "AI交易员" },
       { label: "查看工业富联投资机会分析", x: 7, y: 70, w: 86, h: 4.5, target: "morningListChat" },
       { label: "热点主题",x: 10, y: 53, w: 85, h: 3.5, target: "reportSubject" }
     ],
@@ -70,8 +70,7 @@ const screens = {
     guide: [
       { id: "report-multi-guide", layer: "scroll", x: 7.8, y: 28.4, w: 45.4, h: 8.5 },
       { id: "report-multi-guide", layer: "scroll",  x: 60, y: 34, w: 29, h: 3.5},
-      { id: "report-multi-guide", layer: "scroll", x: 7, y: 70, w: 86, h: 4.5, },
-      { id: "report-multi-guide", layer: "scroll", x: 7, y: 53, w: 86, h: 3.5, }
+      { id: "report-multi-guide", layer: "scroll", x: 7, y: 70, w: 86, h: 4.5, }, 
     ]
   },
   morningListChat: {
@@ -87,7 +86,7 @@ const screens = {
     scrollHotspots: [
       { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
       { label: "查看特别提醒", x: 6.8, y: 28.4, w: 40.4, h: 7.5, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "aiTrader" },
+      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "chat", chatTab: "AI交易员" },
       { label: "重磅事件", x: 10, y: 53, w: 85, h: 3.5, target: "report" }
     ],
     fixedHotspots: [],
@@ -494,7 +493,14 @@ function makeHotspot(spot, className) {
     const nextGuideSelector = activeKey === "sidebar" && target === "chat"
       ? '.chat-chip[data-tab="复杂任务"]'
       : null;
-    showScreen(target, nextGuideSelector);
+    showScreen(target, nextGuideSelector).then(() => {
+      if (spot.chatTab) {
+        const chip = document.querySelector(`.chat-chip[data-tab="${spot.chatTab}"]`);
+        if (chip) {
+          chip.click();
+        }
+      }
+    });
   });
   return node;
 }
