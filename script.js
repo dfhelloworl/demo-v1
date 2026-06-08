@@ -87,17 +87,17 @@ const screens = {
     src: "./assets/screens/account.png",
     scrollHotspots: [
       { label: "关闭我的账户", x: 3, y: 4.6, w: 34, h: 12, target: "market" },
-      { label: "查看账户管家分析", x: 4, y: 27.5, w: 31, h: 4, target: "accountMng" }
+      { label: "查看账户管家分析", x: 4, y: 32.5, w: 37.5, h: 4.2, target: "accountMng" }
     ],
     fixedHotspots: [],
-    guide: { id: "account-analysis-guide", layer: "scroll", x: 4, y: 27.5, w: 31, h: 4 }
+    guide: { id: "account-analysis-guide", layer: "scroll", x: 4, y: 32.5, w: 37.5, h: 4.2 }
   },
   accountMng: {
     src: "./assets/screens/account-mng.png",
     scrollHotspots: [
       { label: "点击上方关闭账户管家", x: 0, y: 0, w: 100, h: 12.5, target: "account" },
       { label: "关闭账户管家", x: 89, y: 12.5, w: 11, h: 10, target: "account" },
-      { label: "帮我分析下当前实时持仓", x: 3, y: 90.5, w: 56, h: 4, target: "accountMng2" }
+      { label: "帮我分析下当前实时持仓", x: 3, y: 83.5, w: 56, h: 4, target: "accountMng2" }
     ],
     fixedHotspots: [],
     guide: null
@@ -106,7 +106,7 @@ const screens = {
     src: "./assets/screens/account-mng-2.png",
     scrollHotspots: [
       { label: "关闭", x: 89, y: 0, w: 11, h: 6, target: "account" },
-      { label: "深度复盘重仓股北方稀土", x: 3, y: 92.2, w: 56, h: 2, target: "accountMng3" }
+      // { label: "深度复盘重仓股北方稀土", x: 3, y: 92.2, w: 56, h: 2, target: "accountMng3" }
     ],
     fixedHotspots: [],
     guide: null
