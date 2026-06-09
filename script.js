@@ -31,14 +31,14 @@ const screens = {
       h: 3.6,
       copy: "长按进行编辑页面"
     },
-    nextGuide: {
-      id: "market-top-signal",
-      layer: "scroll",
-      x: 50,
-      y: 3.8,
-      w: 45,
-      h: 5.8
-    }
+    // nextGuide: {
+    //   id: "market-top-signal",
+    //   layer: "scroll",
+    //   x: 50,
+    //   y: 3.8,
+    //   w: 45,
+    //   h: 5.8
+    // }
   },
   customize: {
     src: "./assets/screens/customize-cards.png",
@@ -62,15 +62,15 @@ const screens = {
     scrollHotspots: [
       { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
       { label: "查看特别提醒", x: 6.8, y: 28.4, w: 40.4, h: 7.5, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "chat", chatTab: "AI交易员" },
+      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "aiTrader" },
       { label: "查看工业富联投资机会分析", x: 7, y: 70, w: 86, h: 4.5, target: "morningListChat" },
       { label: "热点主题",x: 10, y: 53, w: 85, h: 3.5, target: "reportSubject" }
     ],
     fixedHotspots: [],
     guide: [
-      { id: "report-multi-guide", layer: "scroll", x: 7.8, y: 28.4, w: 45.4, h: 8.5 },
-      { id: "report-multi-guide", layer: "scroll",  x: 60, y: 34, w: 29, h: 3.5},
-      { id: "report-multi-guide", layer: "scroll", x: 7, y: 70, w: 86, h: 4.5, }, 
+      // { id: "report-multi-guide", layer: "scroll", x: 7.8, y: 28.4, w: 45.4, h: 8.5 },
+      // { id: "report-multi-guide", layer: "scroll",  x: 60, y: 34, w: 29, h: 3.5},
+      // { id: "report-multi-guide", layer: "scroll", x: 7, y: 70, w: 86, h: 4.5, }, 
     ]
   },
   morningListChat: {
@@ -86,7 +86,7 @@ const screens = {
     scrollHotspots: [
       { label: "查看我的账户", x: 81, y: 2.9, w: 13, h: 4.8, target: "account" },
       { label: "查看特别提醒", x: 6.8, y: 28.4, w: 40.4, h: 7.5, target: "specialNotice" },
-      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "chat", chatTab: "AI交易员" },
+      { label: "呼叫AI交易员制定计划", x: 60, y: 34, w: 29, h: 3.5, target: "aiTrader" },
       { label: "重磅事件", x: 10, y: 53, w: 85, h: 3.5, target: "report" }
     ],
     fixedHotspots: [],
@@ -137,7 +137,7 @@ const screens = {
     guide: null
   },
   aiTrader: {
-    src: "./assets/screens/ai-trader.jpg",
+    src: "./assets/screens/ai-trader.png",
     scrollHotspots: [
       { label: "关闭AI交易员", x: 2.5, y: 5.2, w: 12, h: 7, target: "report" }
     ],
@@ -248,8 +248,7 @@ const screens = {
     ],
     fixedHotspots: [],
     guide: [
-      { id: "trans-more-nav", layer: "fixed", x: 80, y: 0, w: 20, h: 100 },
-      { id: "trans-ai-trader", layer: "scroll", x: 25, y: 4.5, w: 70, h: 16.5}
+      // { id: "trans-ai-trader", layer: "scroll", x: 25, y: 4.5, w: 70, h: 16.5}
     ]
   },
   aiTrader2: {
@@ -1175,7 +1174,7 @@ moreMenu.querySelector(".more-menu-custom-nav").addEventListener("click", () => 
 
 moreModal.querySelector(".more-backdrop").addEventListener("click", () => closeMoreModal());
 moreModal.querySelector(".more-close-left").addEventListener("click", () => closeMoreModal());
-moreModal.querySelector(".more-close-right").addEventListener("click", () => closeMoreModal("chat"));
+moreModal.querySelector(".more-close-right").addEventListener("click", () => closeMoreModal());
 customizeSaveButton.addEventListener("click", () => closeCustomizeOverlay());
 
 window.addEventListener("resize", () => {
@@ -1305,10 +1304,17 @@ function scheduleTraderStep(callback, delay) {
   traderStreamTimers.push(timer);
 }
 
+function getTraderChunkDelay(chunk) {
+  const plainTextLength = chunk.replace(/<[^>]+>/g, "").trim().length;
+  return Math.min(1100, 420 + plainTextLength * 9);
+}
+
 function streamTraderChunks(chunks, onComplete) {
   const bubble = appendTraderScriptMessage("assistant", "", { rich: true });
   bubble.classList.add("is-streaming");
+  let elapsed = 260;
   chunks.forEach((chunk, index) => {
+    elapsed += getTraderChunkDelay(chunk);
     scheduleTraderStep(() => {
       bubble.insertAdjacentHTML("beforeend", chunk);
       chatStream.scrollTop = chatStream.scrollHeight;
@@ -1316,7 +1322,7 @@ function streamTraderChunks(chunks, onComplete) {
         bubble.classList.remove("is-streaming");
         onComplete?.();
       }
-    }, 180 + index * 260);
+    }, elapsed);
   });
 }
 
@@ -1346,10 +1352,10 @@ function showTraderScriptConversation() {
   streamTraderChunks(traderIntroChunks, () => {
     scheduleTraderStep(() => {
       appendTraderScriptMessage("user", "那我以后有交易想法，直接 @ 你就行？");
-    }, 380);
+    }, 760);
     scheduleTraderStep(() => {
       streamTraderChunks(traderFollowupChunks, appendTraderScenarioActions);
-    }, 780);
+    }, 1380);
   });
 }
 
@@ -1360,19 +1366,19 @@ function showTraderScenario2Conversation() {
       streamTraderChunks(traderScenario2OpportunityChunks, () => {
         scheduleTraderStep(() => {
           appendTraderScriptMessage("user", "现在要怎么处理？");
-        }, 380);
+        }, 760);
         scheduleTraderStep(() => {
           streamTraderChunks(traderScenario2AdviceChunks, () => {
             scheduleTraderStep(() => {
               appendTraderScriptMessage("user", "确认并交给你执行。");
-            }, 380);
+            }, 760);
             scheduleTraderStep(() => {
               streamTraderChunks(traderScenario2ConfirmChunks);
-            }, 780);
+            }, 1380);
           });
-        }, 780);
+        }, 1380);
       });
-    }, 520);
+    }, 900);
   });
 }
 
@@ -1383,23 +1389,23 @@ function showTraderScenario3Conversation() {
     streamTraderChunks(traderScenario3ClarifyChunks, () => {
       scheduleTraderStep(() => {
         appendTraderScriptMessage("user", "按稳妥一点的方式来，单只别超过 10%。");
-      }, 380);
+      }, 760);
       scheduleTraderStep(() => {
         streamTraderChunks(traderScenario3RiskChunks, () => {
           scheduleTraderStep(() => {
             streamTraderChunks(traderScenario3PlanChunks, () => {
               scheduleTraderStep(() => {
                 appendTraderScriptMessage("user", "确认建仓计划。");
-              }, 380);
+              }, 760);
               scheduleTraderStep(() => {
                 streamTraderChunks(traderScenario3ConfirmChunks);
-              }, 780);
+              }, 1380);
             });
-          }, 520);
+          }, 900);
         });
-      }, 780);
+      }, 1380);
     });
-  }, 420);
+  }, 860);
 }
 
 function streamReply(promptText) {
@@ -1852,7 +1858,7 @@ keyboardToggle.addEventListener("click", () => {
   setKeyboardMode(!chatInteraction.classList.contains("keyboard-mode"));
 });
 
-plusEntryBtn.addEventListener("click", () => {
+plusEntryBtn?.addEventListener("click", () => {
   setKeyboardMode(true);
   const open = !plusPanel.classList.contains("show");
   plusPanel.classList.toggle("show", open);

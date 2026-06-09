@@ -5652,6 +5652,11 @@ body {
   color: #26834a;
 }
 
+.today-barrage-item[data-kind="v"] i {
+  background: #f0f3ff;
+  color: #6548d8;
+}
+
 .today-barrage-item[data-kind="question"] i {
   background: #fff7e9;
   color: #c66a10;
